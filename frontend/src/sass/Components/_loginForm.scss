@@ -1,0 +1,31 @@
+.login{
+    @include box;
+    @include shadow;
+    padding: 35px;
+    max-width: 900px ;
+    background-color: whitesmoke;
+    &__title{
+        margin-bottom: 35px;
+    }
+    &__field{
+        margin-top: 15px;
+    }
+    &__label{
+        font-weight: 500;
+        margin-left: 12px
+    }
+    &__btn{
+        @include largeBtn;
+    }
+    &__text{
+        @include linkText;
+        font-weight: 500;    
+    }
+    &__message{
+        display: flex;
+        justify-content: center;
+        color: red;
+        margin-top: 15px;
+        font-style: italic;
+    }
+}

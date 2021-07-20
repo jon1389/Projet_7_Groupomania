@@ -1,0 +1,48 @@
+.signup{
+    @include box;
+    @include shadow;
+    max-width: 950px;
+    padding: 35px;
+    background-color: whitesmoke;
+    &__avatar{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 15px 0;
+        &__img{
+            border: 3px #0A58CA solid;
+            box-shadow: 0 0 15px #0A58CA;
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+    }
+    &__field{
+        margin-top: 15px;
+    }
+    &__label{
+        font-weight: 500;
+        margin-left: 12px
+    }
+    &__btn{
+        @include largeBtn;
+    }
+    &__text{
+        @include linkText;
+        font-weight: 500;
+    }
+    &__text:hover{
+        text-shadow: 0 0 5px #dacda2;
+        color: #0B5ED7;
+    }
+    &__errorMessage{
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+        font-family: "roboto";
+        color: firebrick;
+        font-size: 17px;
+    }
+}

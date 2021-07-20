@@ -1,0 +1,27 @@
+.footer{
+    background-color: #0A58CA;
+    display: flex;
+    align-items: center;
+    min-height: 70px;
+    @include shadow;
+    &__links{
+        display: flex;
+        justify-content: space-around;
+        list-style-type: none;
+        align-items: center;
+        @media only screen and (max-width: 510px){
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    &__link{
+        font-weight: 500;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    &__link:hover{
+        text-shadow: 0 5px 15px #dacda2; 
+        color: white; 
+    }
+}
