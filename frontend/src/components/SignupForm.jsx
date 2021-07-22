@@ -4,19 +4,15 @@ import Image from 'react-bootstrap/Image'
 import { checkAlpha, checkPassword, checkEmail } from './CheckInputs';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-
 
 export default function SignupForm() {
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
-    const profileImg = useRef();
-    const firstname = useRef();
-    const lastname = useRef();
+    const userImg = useRef();
+    const firstName = useRef();
+    const lastName = useRef();
     const email = useRef();
     const password = useRef();
-    const history = useHistory();
-
 
     useEffect(() => {
         if (image) {
@@ -43,24 +39,28 @@ export default function SignupForm() {
 
     const addImageBtn = async (event) => {
         event.preventDefault();
-        profileImg.current.click();
+        userImg.current.click();
     };
+
     // axios.defaults.withCredentials = true;
+
 
     const handleSignup = (e) => {
         e.preventDefault()
         const user = {
-            firstname: firstname.current.value,
-            lastname: lastname.current.value,
+            firstName: firstName.current.value,
+            lastName: lastName.current.value,
             email: email.current.value,
             password: password.current.value,
-            profileImg: profileImg.current.value
+            userImg: userImg.current.value
         }
-        axios.post("http://localhost:5000/signup", user)
+        axios.post("http://localhost:5000/api/auth/signup", user)
         .then((response)=>{
             console.log(response)
-            history.push("/login")
-        });
+        })
+        .catch(error => {
+            console.log('Echec de la connexion : ', error);
+        })
     }
 
     return <Container className="signup">
@@ -68,14 +68,14 @@ export default function SignupForm() {
         <form onSubmit={handleSignup}>
             <Container className="signup__avatar text-center">
                 <Image src={preview} className="signup__avatar__img" roundedCircle/>
-                <input type='file' accept="image/*" onChange={handleImageChange} ref={profileImg} style={{display: 'none'}}/>
+                <input type='file' accept="image/*" onChange={handleImageChange} ref={userImg} style={{display: 'none'}}/>
                 <Button className="avatar__btn" onClick={addImageBtn}>Ajouter une photo</Button>
             </Container>
             <Row>
                 <Col sm={6}>
                     <Form.Group className="signup__field" >
                         <Form.Label className="signup__label">Prénom</Form.Label>
-                        <Form.Control type="text" placeholder="Votre prénom" onChange={checkAlpha} ref={firstname} required/>
+                        <Form.Control type="text" placeholder="Votre prénom" onChange={checkAlpha} ref={firstName} required/>
                         <Form.Control.Feedback type="invalid" >
                         Veuillez renseigner un prénom valide.
                         </Form.Control.Feedback>
@@ -84,7 +84,7 @@ export default function SignupForm() {
                 <Col>
                     <Form.Group className="signup__field" >
                         <Form.Label className="signup__label">Nom</Form.Label>
-                        <Form.Control type="text" placeholder="Votre nom" onChange={checkAlpha} ref={lastname} required/>
+                        <Form.Control type="text" placeholder="Votre nom" onChange={checkAlpha} ref={lastName} required/>
                         <Form.Control.Feedback type="invalid" >
                         Veuillez renseigner un nom valide.
                         </Form.Control.Feedback>

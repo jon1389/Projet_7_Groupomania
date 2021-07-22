@@ -1,16 +1,16 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import { checkEmail, checkPassword } from "./CheckInputs";
+import { useHistory } from "react-router";
 
 export default function LoginForm() {
     const email = useRef();
     const password = useRef();
 
-    const [loginStatus, setLoginStatus] = useState("")
-    // axios.defaults.withCredentials = true;
+    const history = useHistory();
 
+    const [loginStatus, setLoginStatus] = useState(false)
 
     const handleLogin = (e) => {
         e.preventDefault()
@@ -18,27 +18,31 @@ export default function LoginForm() {
             email: email.current.value,
             password: password.current.value,
         }
-        axios.post("http://localhost:5000/login", userLogin)
+        axios.post("http://localhost:5000/api/auth/login", userLogin)
         .then((response)=>{
-            if (response.data.message) {
-                setLoginStatus(response.data.message)
+            if (!response.data.auth) {
+                setLoginStatus(false);
             } else {
-                setLoginStatus(response.data[0].email)
+                console.log(response.data)
+                localStorage.setItem("token", response.data.token)
+                localStorage.setItem("auth", response.data.auth)
+                console.log(response.data.auth)
+                setLoginStatus(true);
             }
+            if(response.data.auth === true) {
+                history.push("/home");
+            }
+        }).catch(error => {
+            console.log('Echec de la connexion : ', error);
         });
     }
-
-    // useEffect(() => {
-    //     axios.get("http://localhost:5000/login")
-    //     .then((response) => {
-    //         console.log(response);
-    //     })
-    // }, [])
-
+    
     useEffect(() => {
-        axios.get("http://localhost:5000/login").then((response) => {
+        axios.get("http://localhost:5000/api/auth/login").then((response) => {
             if (response.data.loggedIn === true) {
-                setLoginStatus(response.data.user.email);
+                setLoginStatus(response.data.user[0].username);
+            }else{
+                console.log("problème")
             }
         });
     }, []);
@@ -60,12 +64,12 @@ export default function LoginForm() {
                 Le mot de passe doit contenir 8 caractères dont 1 majuscule, 1 minuscule, 1 chiffre et 1 symbole.
                 </Form.Control.Feedback>
             </Form.Group>
-            <span className="login__message"> {loginStatus} </span>
+            <span>{loginStatus}</span>
             <Button variant="primary" type="submit" className="login__btn">
                 {/* {isFetching ? <Spinner animation="border" size="sm"/> : "Se connecter"} */}
                 Se connecter
             </Button>
-            <Link to='/signup' className="login__text">Mot de passe oublié</Link>
+            <a href="/signup" className="login__text">Vous n'avez pas de compte?</a>
         </form>
     </Container>
 }

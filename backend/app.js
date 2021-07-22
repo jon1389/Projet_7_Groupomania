@@ -1,120 +1,41 @@
+require('dotenv').config();
 const express = require('express');
-const mysql = require('mysql');
 const cors = require('cors');
-require('dotenv').config()
-
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-
+const path = require('path');
 const app = express();
+const db = require('./models');
 
-app.use(express.json());
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoute');
 
-app.use(function (req, res, next) {
-    //Enabling CORS
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+
+// Configuring CORS Headers
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     next();
 });
 
-// app.use(
-//     cors({
-//         origin: "http://localhost:5000",
-//         methods: ["GET", "POST"],
-//         credentials: true,
-//     })
-// );
-app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app.use(session({
-    key: "userId",
-    secret: process.env.SECRET_SESSION,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {secure: true, maxAge: 10000}
+// Connexion à la base de donnée
+db.sequelize
+    .authenticate()
+    .then(() => {
+        console.log('Connexion à la base de donnée établie');
     })
-);
-
-const db = mysql.createConnection({
-    host: process.env.DATABASE_HOST,
-    user: process.env.DATABASE_USER,
-    password: process.env.DATABASE_PASSWORD,
-    database: process.env.DATABASE 
-});
-
-db.connect( (error) => {
-    if(error) {
-        console.log(error)
-    } else {
-        console.log("Connexion à la base de donnée établie")
-    }
-})
-
-app.post("/signup", (req, res, next) => {
-    const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
-    const email = req.body.email;
-    const password = req.body.password;
-    const profileImg = req.body.profileImg;
-
-    bcrypt.hash(password, saltRounds, (err, hash) => {
-        if (err) {
-            console.log(err)
-        }
-        db.query("INSERT INTO users (firstname, lastname, email, password, profileImg) VALUES (?, ?, ?, ?, ?)", 
-        [firstname, lastname, email, hash, profileImg],
-        (error, result) =>{
-            console.log(error);
-        });
+    .catch(error => {
+        console.log('Echec de la connexion à la base : ', error);
     })
-    next();
-});
-
-app.get("/login", (req, res, next) => {
-    if (req.session) {
-        console.log(req.session)
-        console.log(req.session.id)
-        res.send({ loggedIn: true, user: req.session });
-    } else {
-        res.send({ loggedIn: false });
-    }
-    next();
-});
-
-app.post("/login", (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    db.query("SELECT * FROM users WHERE email = ?;", 
-    [email],
-    (err, result) =>{
-        if(err){
-            res.send({err: err});
-        }
-
-        if (result.length > 0) {
-            bcrypt.compare(password, result[0].password, (error, response) =>{
-                if (response){
-                    req.session.user = result;
-                    console.log(req.session.user);
-                    res.send(result)
-                } else {
-                    res.send({message : "L'adresse email ou le mot de passe est incorrect !"})
-                }
-            })
-        } else {
-            res.send({message : "L'utilisateur n'existe pas !"})
-        }
-    });
-});
 
 
-app.listen(5000, () => {
-    console.log("Serveur démarré sur le port 5000");
-})
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+
+
+module.exports = app;
