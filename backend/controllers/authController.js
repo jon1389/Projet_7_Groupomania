@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 require('dotenv').config();
 
 const db = require('../models');
@@ -33,11 +34,9 @@ exports.signup = (req, res, next) => {
                         ),
                     })
                 })
-                .catch(err => res.send('ERROR: ' + err))
+                .catch(error => res.status(400).json({ error }))
         })
-        .catch(err => {
-            res.send('ERROR: ' + err)
-        })
+        .catch(error => res.status(500).json({ error }))
 };
 
 exports.login = (req, res, next) => {
@@ -56,14 +55,13 @@ exports.login = (req, res, next) => {
                     return res.status(401).json({ error: 'Mot de passe incorrect !' });
                 }
                 res.status(200).json({
-                userId: user._id,
+                userId: user.id,
                 token: jwt.sign(
-                    { userId: user._id },
+                    { userId: user.id },
                     process.env.TOKEN_ENCODED,
                     { expiresIn: '24h' },
                     )
                 });
-                console.log(user)
             })
             .catch(err => {
                 res.send('ERROR: ' + err)
@@ -75,11 +73,16 @@ exports.login = (req, res, next) => {
 };
 
 exports.getCurrentUser = (req, res, next) => {
+    console.log(res.locals);
     db.User.findOne({ where: { id: res.locals.userId } })
         .then(user => {
             return res.status(200).json({
+                firstName: user.firstName,
+                lastName: user.lastName,
                 email: user.email,
             });
         })
-        .catch(error => res.status(500).json({ error }))
+        .catch(err => {
+            res.send('ERROR: ' + err)
+        });
 }

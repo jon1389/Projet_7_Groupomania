@@ -44,31 +44,22 @@ export default function CreatePost() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const [title, setTitle] = useState("");
-    const [postImg, setPostImg] = useState("");
+    const [title, setTitle] = useState();
+    const [file, setFile] = useState();
     
     const handlePost = (e) => {
         e.preventDefault()
-        axios.post("http://localhost:5000/posts", {
-            title: title,
-            postImg : postImg,
-        })
+        const data = new FormData();
+        data.append("title", title);
+        data.append("postImg", file);
+        axios.post("http://localhost:5000/api/post", data)
         .then((response)=>{
             console.log(response);
             handleClose();
-        });
+        })
+        .catch(err => console.log(err));
     }
 
-    /// Fonction pour selectionner l'adresse de l'image à envoyer dans la BDD
-    const selectImg = (e) => {
-        setPostImg(e.target.value)
-    }
-
-    /// Fonction qui regroupe
-    const validateImg = (e) =>{
-        selectImg(e);
-        handleImageChange(e)
-    }
 
     return <>
         <Container className="CreatePost">
@@ -97,14 +88,14 @@ export default function CreatePost() {
                         <Col>
                             <Button className="CreatePost__input" onClick={() => onButtonClick(imgInputRef)}>
                                 <FontAwesomeIcon icon={faImages} size="2x"/>
-                                <input type='file' accept="image/*" onChange={validateImg} ref={imgInputRef} style={{display: 'none'}}/>
+                                <input type='file' accept="image/*" onChange={(e) => { setFile(e.target.value) }} ref={imgInputRef} style={{display: 'none'}}/>
                                 <span>Ajouter une photo</span>
                             </Button>
                         </Col>
                         <Col>
                             <Button className="CreatePost__input" onClick={() => onButtonClick(videoInputRef)}>
                                 <FontAwesomeIcon icon={faVideo} size="2x"/>
-                                <input type='file' accept="video/*" onChange={validateImg} ref={videoInputRef} style={{display: 'none'}}/>
+                                <input type='file' accept="video/*" onChange={(e) => { setFile(e.target.value) }} ref={videoInputRef} style={{display: 'none'}}/>
                                 <span>Ajouter une vidéo</span>
                             </Button>
                         </Col>

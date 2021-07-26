@@ -56,7 +56,10 @@ export default function SignupForm() {
         }
         axios.post("http://localhost:5000/api/auth/signup", user)
         .then((response)=>{
-            console.log(response)
+            const date = new Date();
+            date.setTime(date.getTime() + (24*60*60*1000));
+            document.cookie = 'token=' + response.data.token + '; expires=' + date.toUTCString() + '; path=/; SameSite=Strict';
+            window.location.href = "/login";        
         })
         .catch(error => {
             console.log('Echec de la connexion : ', error);
