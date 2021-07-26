@@ -7,7 +7,6 @@ const app = express();
 const db = require('./models');
 
 const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoute');
 
 
 // Configuring CORS Headers
@@ -35,7 +34,5 @@ db.sequelize
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-
 
 module.exports = app;
