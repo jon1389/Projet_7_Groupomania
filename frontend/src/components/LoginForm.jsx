@@ -5,7 +5,6 @@ import { checkEmail, checkPassword } from "./CheckInputs";
 
 
 export default function LoginForm() {
-    localStorage.clear();
     const email = useRef();
     const password = useRef();
 

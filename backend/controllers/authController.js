@@ -12,16 +12,14 @@ exports.signup = (req, res, next) => {
     const password = req.body.password;
     const userImg = req.body.userImg;
 
-    // Hash the user's password
     bcrypt.hash(password, 10)
         .then(hash => {
-            // Create a new User and save it to the database
             db.User.create({
-                firstName,
-                lastName,
-                email,
+                firstName: firstName,
+                lastName: lastName,
+                email : email,
                 password: hash,
-                userImg,
+                userImg: userImg,
             })
                 .then(user => {
                     res.status(201).json({
@@ -36,7 +34,10 @@ exports.signup = (req, res, next) => {
                 })
                 .catch(error => res.status(400).json({ error }))
         })
-        .catch(error => res.status(500).json({ error }))
+        .catch(error => {
+            const message = `probleme : ${error.field}`
+            console.log(message)
+            res.status(500).send({ error })})
 };
 
 exports.login = (req, res, next) => {
@@ -73,13 +74,16 @@ exports.login = (req, res, next) => {
 };
 
 exports.getCurrentUser = (req, res, next) => {
-    console.log(res.locals);
-    db.User.findOne({ where: { id: res.locals.userId } })
+    console.log(req.headers.authorization.split(' ')[1]);
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.decode(token, {complete: true})
+    db.User.findOne({ where: { id: decoded.payload.userId } })
         .then(user => {
             return res.status(200).json({
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
+                userImg: user.userImg,
             });
         })
         .catch(err => {

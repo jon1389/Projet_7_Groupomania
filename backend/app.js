@@ -7,12 +7,13 @@ const app = express();
 const db = require('./models');
 
 const authRoutes = require('./routes/authRoutes');
+const postRoutes = require('./routes/postRoutes')
 
 
 // Configuring CORS Headers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     res.setHeader("Access-Control-Allow-Credentials", "true");
     next();
@@ -34,5 +35,6 @@ db.sequelize
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/posts', postRoutes);
 
 module.exports = app;

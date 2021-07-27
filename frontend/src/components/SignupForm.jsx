@@ -37,8 +37,7 @@ export default function SignupForm() {
         }
     }
 
-    const addImageBtn = async (event) => {
-        event.preventDefault();
+    const addImageBtn = () => {
         userImg.current.click();
     };
 
@@ -47,33 +46,47 @@ export default function SignupForm() {
 
     const handleSignup = (e) => {
         e.preventDefault()
-        const user = {
-            firstName: firstName.current.value,
-            lastName: lastName.current.value,
-            email: email.current.value,
-            password: password.current.value,
-            userImg: userImg.current.value
-        }
-        axios.post("http://localhost:5000/api/auth/signup", user)
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; token=`);
+        const token = parts.pop().split(';').shift();
+        const formData = new FormData()
+        formData.append("firstName", firstName.current.value);
+        formData.append("lastName", lastName.current.value);
+        formData.append("email", email.current.value);
+        formData.append("password", password.current.value);
+        formData.append("userImg", userImg.current.files[0]);
+        axios.post("http://localhost:5000/api/auth/signup", formData, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'multipart/form-data'
+            }
+        })
         .then((response)=>{
+            console.log(response);
             const date = new Date();
             date.setTime(date.getTime() + (24*60*60*1000));
             document.cookie = 'token=' + response.data.token + '; expires=' + date.toUTCString() + '; path=/; SameSite=Strict';
-            window.location.href = "/login";        
+            console.log(userImg.current.files);
+            console.log(userImg.current.files[0]);
+            // window.location.href = "/login";        
         })
         .catch(error => {
             console.log('Echec de la connexion : ', error);
         })
     }
 
+    const confirmImg = () =>{
+        userImg(userImg.current.files[0])
+    }
+
     return <Container className="signup">
         <h1 className="text-center">Inscription</h1>
-        <form onSubmit={handleSignup}>
-            <Container className="signup__avatar text-center">
+        <form onSubmit={handleSignup} >
+            <Form.Group className="signup__avatar text-center">
                 <Image src={preview} className="signup__avatar__img" roundedCircle/>
-                <input type='file' accept="image/*" onChange={handleImageChange} ref={userImg} style={{display: 'none'}}/>
+                <input type='file' accept="image/*" name='userImg' id="image" onChange={handleImageChange} ref={userImg} style={{display: 'none'}} onSubmit={confirmImg}/>
                 <Button className="avatar__btn" onClick={addImageBtn}>Ajouter une photo</Button>
-            </Container>
+            </Form.Group>
             <Row>
                 <Col sm={6}>
                     <Form.Group className="signup__field" >

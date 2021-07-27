@@ -10,7 +10,6 @@ module.exports = {
       },
       postTitle: {
         type: Sequelize.STRING(50),
-        allowNull: false,      
       },
       postImg: {
         type: Sequelize.STRING,

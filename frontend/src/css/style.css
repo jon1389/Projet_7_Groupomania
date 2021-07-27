@@ -174,12 +174,15 @@
 .homeHeader__navbar__icon {
   margin-right: 5px;
   height: 40px;
+  width: 40px;
+  object-fit: cover;
   color: white;
 }
 
 @media only screen and (max-width: 768px) {
   .homeHeader__navbar__icon {
     height: 25px;
+    width: 25px;
   }
 }
 

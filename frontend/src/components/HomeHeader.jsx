@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import axios from 'axios';
 
 export default function HomeHeader() {
+
+    const [user, setUser] = useState("")
 
     useEffect(() => {
         const value = `; ${document.cookie}`;
@@ -17,7 +19,7 @@ export default function HomeHeader() {
                 'Authorization': 'Bearer ' + token
             }
         }).then((response) => {
-            console.log(response);
+            setUser(response.data)
         });
     }, []);
 
@@ -34,8 +36,10 @@ export default function HomeHeader() {
             </a>
             <nav className='homeHeader__navbar'>
                 <a href="/login" className='homeHeader__navbar__links'>
-                <Image src="../assets/white_avatar.png" className="homeHeader__navbar__icon" roundedCircle/>
-                <span className='homeHeader__navbar__text'>Nom de l'utilisateur</span>
+                <Image src={user.userImg? user.userImg : "../assets/white_avatar.png"} className="homeHeader__navbar__icon" roundedCircle/>
+                {/* <Image src="../assets/white_avatar.png" className="homeHeader__navbar__icon" roundedCircle/> */}
+                {/* <span className='homeHeader__navbar__text'>nom</span> */}
+                <span className='homeHeader__navbar__text'>{user.firstName} {user.lastName}</span>
                 </a>
                 <a href="/logout" className='homeHeader__navbar__links' onClick={logout}>
                     <FontAwesomeIcon icon={faSignOutAlt} size="2x" className="homeHeader__navbar__avatar"/>
