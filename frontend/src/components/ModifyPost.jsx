@@ -5,35 +5,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Form, Image, Modal, Row } from "react-bootstrap";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
-function ModifyPost() {
+function ModifyPost(post) {
+	const imgUrl = "http://localhost:5000/images/";
+
 	const [imageContent, setImageContent] = useState(null);
 	const [previewContent, setPreviewContent] = useState(null);
 	const imgInputRef = useRef(null);
 	const videoInputRef = useRef(null);
 
-	const value = `; ${document.cookie}`;
-	const parts = value.split(`; token=`);
-	const token = parts.pop().split(";").shift();
-
-	const [post, setPost] = useState([]);
-
-	///// Import des données de la publication /////
-	useEffect(() => {
-		Axios.get("http://localhost:5000/api/posts", {
-			headers: {
-				Authorization: "Bearer " + token,
-			},
-		})
-			.then((response) => {
-				console.log(response.data);
-				setPost(response.data);
-			})
-			.catch((err) => {
-				console.log(err);
-				// window.alert('Une erreur est survenue, veuillez réessayer plus tard. Si le problème persiste, contactez l\'administrateur du site');
-			});
-	}, [token]);
-
+	const currentImg = post.post.postImg;
 	useEffect(() => {
 		if (imageContent) {
 			const reader = new FileReader();
@@ -42,9 +22,9 @@ function ModifyPost() {
 			};
 			reader.readAsDataURL(imageContent);
 		} else {
-			setPreviewContent("./assets/preview.jpg");
+			setPreviewContent(imgUrl + currentImg);
 		}
-	}, [imageContent]);
+	}, [imageContent, currentImg]);
 
 	const onButtonClick = (ref) => {
 		ref.current.click();
@@ -64,21 +44,36 @@ function ModifyPost() {
 	const [show, setShow] = useState(false);
 
 	const handleClose = () => setShow(false);
-	const handleShow = () => setShow(true);
+	const handleShow = () => {
+		setShow(true);
+		console.log(post.post.postImg);
+	};
 
 	const [title, setTitle] = useState("");
 	const [postImg, setPostImg] = useState("");
 
-	const handlePost = (e) => {
+	const handleModify = (e) => {
+		const value = `; ${document.cookie}`;
+		const parts = value.split(`; token=`);
+		const token = parts.pop().split(";").shift();
+		const id = post.post.id;
+		console.log(id);
 		e.preventDefault();
-		// Axios.post("http://localhost:5000/posts", {
-		//     title: title,
-		//     postImg : postImg,
-		// })
-		// .then((response)=>{
-		//     console.log(response);
-		handleClose();
-		// });
+		Axios.post(
+			"http://localhost:5000/posts/" + id,
+			{
+				title: title,
+				postImg: postImg,
+			},
+			{
+				headers: {
+					Authorization: "Bearer " + token,
+				},
+			}
+		).then((response) => {
+			console.log(response);
+			handleClose();
+		});
 	};
 
 	/// Fonction pour selectionner l'adresse de l'image à envoyer dans la BDD
@@ -143,7 +138,10 @@ function ModifyPost() {
 						<Row className="display">
 							<Col>
 								<Container className="modifyPost__previewContainer">
-									<Image src={previewContent} className="modifyPost__preview" />
+									<Image
+										src={previewContent ? previewContent : imgUrl + currentImg}
+										className="modifyPost__preview"
+									/>
 								</Container>
 							</Col>
 						</Row>
@@ -185,7 +183,7 @@ function ModifyPost() {
 									</Button>
 								</Col>
 								<Col>
-									<Button className="modifyPost__btn" variant="primary" onClick={handlePost}>
+									<Button className="modifyPost__btn" variant="primary" onClick={handleModify}>
 										Publier
 									</Button>
 								</Col>

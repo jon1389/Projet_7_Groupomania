@@ -97,7 +97,7 @@ export default function CreatePost() {
 		})
 			.then((response) => {
 				console.log(response);
-				// console.log(file);
+				window.location.href = "/home";
 				handleClose();
 			})
 			.catch((err) => console.log(err));

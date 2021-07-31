@@ -1,5 +1,3 @@
-import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { Container, Image } from "react-bootstrap";
 import Axios from "axios";
@@ -7,8 +5,9 @@ import LikeDislike from "./LikeDislike";
 import { format, register } from "timeago.js";
 import Comment from "./Comment";
 import CreateComment from "./CreateComment";
+import ModifyPost from "./ModifyPost";
 
-export default function Post(handleComment) {
+export default function Post() {
 	const avatarUrl = "http://localhost:5000/avatars/";
 	const imgUrl = "http://localhost:5000/images/";
 	const Timeago = (number: number, index: number): [string, string] => {
@@ -43,7 +42,7 @@ export default function Post(handleComment) {
 			},
 		})
 			.then((response) => {
-				console.log(response.data);
+				// console.log(response.data);
 				setPost(response.data);
 			})
 			.catch((err) => {
@@ -77,11 +76,7 @@ export default function Post(handleComment) {
 									</span>
 								</div>
 								<div className="post__topRight">
-									<FontAwesomeIcon
-										className="post__topRight__icon"
-										icon={faEllipsisV}
-										role="button"
-									/>
+									<ModifyPost post={post} />
 								</div>
 							</div>
 							<hr />
@@ -95,7 +90,6 @@ export default function Post(handleComment) {
 							</div>
 							<div className="post__bottom">
 								<LikeDislike />
-								{/* <Comment post={post} /> */}
 								<button
 									className="post__bottomRight"
 									onClick={() => setShowComment((prev) => !prev)}
@@ -109,28 +103,6 @@ export default function Post(handleComment) {
 						{showComment && <Comment post={post} />}
 						<hr />
 						<CreateComment post={post} />
-						{/* <form onSubmit={handleComment} className="sendComment"> */}
-						{/* <form className="sendComment">
-					<Image
-						src={user.userImg ? `${avatarUrl}${user.userImg}` : "./assets/black_avatar.png"}
-						className="comment__avatar"
-						roundedCircle
-					/>
-					<input
-						as="textarea"
-						className="sendComment__input"
-						placeholder="Écrivez un commentaire ..."
-						onChange={selectPostComment}
-					/>
-					<Image
-						type="submit"
-						src="./assets/plus.png"
-						className="sendComment__icon"
-						roundedCircle
-						role="button"
-						onClick={() => handleComment(post.id)}
-					/>
-				</form> */}
 					</Container>
 				);
 			})}
