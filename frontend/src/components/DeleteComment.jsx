@@ -1,17 +1,20 @@
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useState } from "react";
 import Axios from "axios";
 
 export default function DeleteComment(comments) {
-	console.log(comments.comment.id);
 	const value = `; ${document.cookie}`;
 	const parts = value.split(`; token=`);
 	const token = parts.pop().split(";").shift();
 
 	const id = comments.comment.id;
 
+	const [state, setState] = useState(false);
+
 	const deleteComment = () => {
+		setState(true);
+		window.confirm("Êtes-vous sûr de vouloir supprimer ce commentaire?");
 		Axios.delete(`http://localhost:5000/api/comments/` + id, {
 			headers: {
 				Authorization: "Bearer " + token,
@@ -23,7 +26,7 @@ export default function DeleteComment(comments) {
 			})
 			.catch((err) => {
 				console.log(err, "Vous ne pouvez pas supprimer ce commentaire");
-				// window.alert("Vous ne pouvez pas supprimer ce commentaire");
+				window.alert("Vous ne pouvez pas supprimer ce commentaire");
 			});
 	};
 	return (

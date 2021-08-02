@@ -1,19 +1,20 @@
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
 import DeleteComment from "./DeleteComment";
 import jwt_decode from "jwt-decode";
+import { format, register } from "timeago.js";
+import { Timeago } from "../functions/Timeago";
 
 export default function Comment(post) {
 	const avatarUrl = "http://localhost:5000/avatars/";
+	register("FR", Timeago);
 	const value = `; ${document.cookie}`;
 	const parts = value.split(`; token=`);
 	const token = parts.pop().split(";").shift();
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
-	console.log(userId);
+	// console.log(userId);
 
 	/// Import des données des commentaires ////
 	const [comments, setComments] = useState([]);
@@ -56,6 +57,9 @@ export default function Comment(post) {
 									<div className="comment__detail">
 										<div className="comment__name">
 											{comment.User.firstname} {comment.User.lastname}
+											<span className="comment__date">
+												- posté {format(comment.createdAt, "FR")}
+											</span>
 										</div>
 										<div className="comment__text">{comment.commentText}</div>
 									</div>

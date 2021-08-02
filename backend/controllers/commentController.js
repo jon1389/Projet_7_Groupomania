@@ -19,7 +19,7 @@ exports.createComment = (req, res, next) => {
 exports.getAllComments = (req, res, next) => {
 	db.Comment.findAll({
 		include: [db.User, db.Post],
-		order: [["createdAt", "DESC"]],
+		order: [["createdAt", "ASC"]],
 	})
 		.then((comments) => {
 			// console.log(comments);

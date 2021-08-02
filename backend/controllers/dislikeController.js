@@ -61,8 +61,18 @@ exports.createDislike = (req, res, next) => {
 							UserId: decoded.payload.userId,
 						},
 					}).then((likes) => {
-						if (likes) {
+						if (!likes) {
+							db.Like.create(
+								{
+									like: "1",
+									PostId: req.params.id,
+									UserId: decoded.payload.userId,
+								},
+								{ where: { PostId: req.params.id } }
+							);
+						} else {
 							db.Like.destroy({ where: { PostId: req.params.id } });
+							console.log("error");
 						}
 					});
 				});

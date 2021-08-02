@@ -3,38 +3,24 @@ import { Container, Image } from "react-bootstrap";
 import Axios from "axios";
 import LikeDislike from "./LikeDislike";
 import { format, register } from "timeago.js";
+import { Timeago } from "../functions/Timeago";
 import Comment from "./Comment";
 import CreateComment from "./CreateComment";
 import ModifyPost from "./ModifyPost";
+import jwt_decode from "jwt-decode";
 
 export default function Post() {
 	const avatarUrl = "http://localhost:5000/avatars/";
 	const imgUrl = "http://localhost:5000/images/";
-	const Timeago = (number: number, index: number): [string, string] => {
-		return [
-			["à l'instant", "dans un instant"],
-			["il y a %s secondes", "dans %s secondes"],
-			["il y a 1 minute", "dans 1 minute"],
-			["il y a %s minutes", "dans %s minutes"],
-			["il y a 1 heure", "dans 1 heure"],
-			["il y a %s heures", "dans %s heures"],
-			["il y a 1 jour", "dans 1 jour"],
-			["il y a %s jours", "dans %s jours"],
-			["il y a 1 semaine", "dans 1 semaine"],
-			["il y a %s semaines", "dans %s semaines"],
-			["il y a 1 mois", "dans 1 mois"],
-			["il y a %s mois", "dans %s mois"],
-			["il y a 1 an", "dans 1 an"],
-			["il y a %s ans", "dans %s ans"],
-		][index];
-	};
-	register("FR", Timeago);
 	const [showComment, setShowComment] = useState(false);
+	register("FR", Timeago);
 
 	const [post, setPost] = useState([]);
 	const value = `; ${document.cookie}`;
 	const parts = value.split(`; token=`);
 	const token = parts.pop().split(";").shift();
+	const decoded = jwt_decode(token);
+	const userId = decoded.userId;
 	useEffect(() => {
 		Axios.get("http://localhost:5000/api/posts", {
 			headers: {
@@ -76,6 +62,7 @@ export default function Post() {
 									</span>
 								</div>
 								<div className="post__topRight">
+									{/* {post.UserId === userId ? <ModifyPost post={post} /> : null} */}
 									<ModifyPost post={post} />
 								</div>
 							</div>
@@ -99,7 +86,6 @@ export default function Post() {
 								</button>
 							</div>
 						</div>
-
 						{showComment && <Comment post={post} />}
 						<hr />
 						<CreateComment post={post} />

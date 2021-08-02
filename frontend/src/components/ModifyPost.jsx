@@ -6,7 +6,7 @@ import { Button, Col, Container, Form, Image, Modal, Row } from "react-bootstrap
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
 function ModifyPost(post) {
-	console.log(post);
+	// console.log(post);
 	const imgUrl = "http://localhost:5000/images/";
 
 	const [imageContent, setImageContent] = useState(null);

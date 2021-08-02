@@ -1,11 +1,9 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
 import jwt_decode from "jwt-decode";
 import Axios from "axios";
 
 export default function CreateComment(post) {
-	const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
-
 	// console.log(post.post.id);
 	const avatarUrl = "http://localhost:5000/avatars/";
 	const [user, setUser] = useState("");
@@ -24,16 +22,15 @@ export default function CreateComment(post) {
 		}).then((response) => {
 			setUser(response.data);
 			// console.log(response.data);
-
-			// console.log(decoded);
 		});
 	}, []);
 
-	const [comment, setComment] = useState("");
+	const [comment, setComment] = useState();
 
 	const selectTextComment = (e) => {
 		setComment(e.target.value);
 	};
+	const [, setCount] = useState(0);
 
 	const handleComment = () => {
 		const id = post.post.id;
@@ -52,15 +49,21 @@ export default function CreateComment(post) {
 			}
 		)
 			.then((response) => {
-				forceUpdate();
 				console.log(response);
+				setCount((c) => c + 1);
+				console.log("Le commentaire ne peut pas être vide");
 			})
 			.catch((err) => console.log(err));
 	};
 
+	const handleKeyDown = (event) => {
+		if (event.key === "Enter") {
+			handleComment(post.id);
+		}
+	};
+
 	return (
 		<form className="sendComment">
-			{/* <form className="sendComment"> */}
 			<Image
 				src={user.userImg ? `${avatarUrl}${user.userImg}` : "./assets/black_avatar.png"}
 				className="comment__avatar"
@@ -71,6 +74,7 @@ export default function CreateComment(post) {
 				className="sendComment__input"
 				placeholder="Écrivez un commentaire..."
 				onChange={selectTextComment}
+				// onKeyDown={handleKeyDown}
 			/>
 			<Image
 				type="submit"

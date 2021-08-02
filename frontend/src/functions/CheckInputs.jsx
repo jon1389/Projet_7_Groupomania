@@ -1,7 +1,6 @@
 export const checkAlpha = (input) => {
 	const isAlpha = /^[a-zA-Zà-żÀ-Ż+\s+-]+$/;
 	const value = input.target.value;
-	console.log(value);
 	if (isAlpha.test(value)) {
 		input.target.className = "form-control is-valid";
 	} else {
@@ -21,10 +20,8 @@ export const checkEmail = (input) => {
 };
 
 export const checkPassword = (input) => {
-	const isPassword =
-		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+	const isPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 	const value = input.target.value;
-	console.log(value);
 	if (isPassword.test(value)) {
 		input.target.className = "form-control is-valid";
 	} else {
