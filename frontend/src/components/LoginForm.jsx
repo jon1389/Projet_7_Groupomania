@@ -1,7 +1,7 @@
 import Axios from "axios";
 import { useRef } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import { checkEmail, checkPassword } from "./CheckInputs";
+import { checkEmail, checkPassword } from "../functions/CheckInputs";
 
 export default function LoginForm() {
 	const email = useRef();

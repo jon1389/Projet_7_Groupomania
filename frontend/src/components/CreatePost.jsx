@@ -36,7 +36,6 @@ export default function CreatePost() {
 				setPreviewContent(reader.result);
 			};
 			reader.readAsDataURL(imageContent);
-			console.log(imageContent);
 		} else {
 			setPreviewContent("./assets/preview.jpg");
 		}
@@ -49,7 +48,6 @@ export default function CreatePost() {
 	/// Fonction pour afficher la preview de l'image
 	const handleImageChange = (e) => {
 		const selected = e.target.files[0];
-		console.log(selected);
 		if (selected) {
 			setImageContent(selected);
 		} else {
@@ -62,7 +60,6 @@ export default function CreatePost() {
 	const handleClose = () => setShow(false);
 	const handleShow = () => {
 		setShow(true);
-		console.log(previewContent);
 	};
 
 	const [title, setTitle] = useState();

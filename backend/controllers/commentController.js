@@ -20,31 +20,19 @@ exports.getAllComments = (req, res, next) => {
 	db.Comment.findAll({
 		include: [db.User, db.Post],
 		order: [["createdAt", "DESC"]],
-		// order: [
-		//     [req.query.sort ?? 'id', req.query.order ?? 'ASC']
-		// ],
-		// include: (req.query.include === 'user' ? [{ model: db.User, attributes: ['email'] }] : '')
 	})
 		.then((comments) => {
-			console.log(comments);
+			// console.log(comments);
 			res.status(200).json(comments);
 		})
 		.catch((error) => res.status(500).json({ error }));
 };
 
 exports.getCommentById = (req, res, next) => {
-	// console.log(req.headers.authorization.split(" ")[1]);
-	// const token = req.headers.authorization.split(" ")[1];
-	// const decoded = jwt.decode(token, { complete: true });
 	const id = req.params.id;
 	db.Comments.findOne({
 		where: {
 			id,
-			// order: [["createdAt", "DESC"]],
-			// order: [
-			//     [req.query.sort ?? 'id', req.query.order ?? 'ASC']
-			// ],
-			// include: (req.query.include === 'user' ? [{ model: db.User, attributes: ['email'] }] : '')
 		},
 		include: [db.User, db.Post],
 	})
@@ -53,4 +41,20 @@ exports.getCommentById = (req, res, next) => {
 			res.status(200).json(comments);
 		})
 		.catch((error) => res.status(500).json({ error }));
+};
+
+exports.deleteComment = (req, res, next) => {
+	const token = req.headers.authorization.split(" ")[1];
+	const decoded = jwt.decode(token, { complete: true });
+	console.log(req.params.id);
+	db.Comment.findOne({ where: { id: req.params.id } }).then((comment) => {
+		if (comment.UserId === decoded.payload.userId) {
+			db.Comment.destroy({ where: { id: req.params.id } })
+				.then(() => res.status(200).json({ message: "Commentaire supprimé !" }))
+				.catch((error) => res.status(400).json({ error }));
+		} else {
+			res.status(401).json("Vous ne pouvez pas supprimer ce commentaire");
+			console.log("Vous ne pouvez pas supprimer ce commentaire");
+		}
+	});
 };

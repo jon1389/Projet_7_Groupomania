@@ -20,7 +20,7 @@ exports.createPost = (req, res, next) => {
 //// Obtenir les publications avec les utilisateurs liés
 exports.getAllPosts = (req, res, next) => {
 	db.Post.findAll({
-		include: [db.User],
+		include: [db.User, db.Comment],
 		order: [["createdAt", "DESC"]],
 	})
 		.then((posts) => {
@@ -39,10 +39,6 @@ exports.getCurrentPost = (req, res, next) => {
 	db.Post.findOne({
 		where: { id },
 		order: [["createdAt", "DESC"]],
-		// order: [
-		//     [req.query.sort ?? 'id', req.query.order ?? 'ASC']
-		// ],
-		// include: (req.query.include === 'user' ? [{ model: db.User, attributes: ['email'] }] : '')
 	})
 		.then((post) => {
 			// console.log(post);
@@ -52,105 +48,38 @@ exports.getCurrentPost = (req, res, next) => {
 };
 
 exports.modifyPost = (req, res, next) => {
-	db.Post.findOne({ where: { id: req.params.id } })
-		.then((post) => {
-			const filename = post.imageUrl.split("/images/")[1];
-			fs.unlink(`images/${filename}`, () => {
-				post
-					.deleteOne({ _id: req.params.id })
-					.then(() => res.status(200).json({ message: "Publication supprimée !" }))
-					.catch((error) => res.status(400).json({ error }));
-			});
-		})
-		.catch((error) => res.status(500).json({ error }));
+	const token = req.headers.authorization.split(" ")[1];
+	const decoded = jwt.decode(token, { complete: true });
+
+	db.Post.findOne({ where: { id: req.params.id } }).then((post) => {
+		if (post.UserId === decoded.payload.userId) {
+			db.Post.update(
+				{
+					postTitle: req.body.postTitle,
+					postImg: req.file.filename,
+				},
+				{ where: { id: req.params.id } }
+			)
+				.then((post) => res.status(200).json({ post }))
+				.catch((error) => res.status(500).json({ error }));
+		} else {
+			res.status(401).json("Vous ne pouvez pas modifier cette publication");
+			console.log("Vous ne pouvez pas modifier cette publication");
+		}
+	});
 };
 
-// exports.deletePost = (req, res, next) => {
-// 	db.Post.findOne({ where: { id: req.params.id } })
-// 		.then((post) => {
-// 			const filename = post.imageUrl.split("/images/")[1];
-// 			fs.unlink(`images/${filename}`, () => {
-// 				post
-// 					.deleteOne({ _id: req.params.id })
-// 					.then(() => res.status(200).json({ message: "Publication supprimée !" }))
-// 					.catch((error) => res.status(400).json({ error }));
-// 			});
-// 		})
-// 		.catch((error) => res.status(500).json({ error }));
-// };
-
-///////// version postman /////////
 exports.deletePost = (req, res, next) => {
-	db.Post.findOne({ where: { id: req.params.id } })
-		.then((post) => {
-			post
-				.destroy({ _id: req.params.id })
+	const token = req.headers.authorization.split(" ")[1];
+	const decoded = jwt.decode(token, { complete: true });
+	db.Post.findOne({ where: { id: req.params.id } }).then((post) => {
+		if (post.UserId === decoded.payload.userId) {
+			db.Post.destroy({ where: { id: req.params.id, UserId: decoded.payload.userId } })
 				.then(() => res.status(200).json({ message: "Publication supprimée !" }))
-				.catch((error) => res.status(400).json({ error }));
-		})
-		.catch((err) => {
-			res.send("ERROR: " + err);
-		});
-};
-
-exports.LikePost = (req, res, next) => {
-	const like = req.body.like;
-	const userId = req.body.userId;
-	const postId = req.params.id;
-
-	if (like === 1) {
-		db.Post.updateOne(
-			{ where: { id: postId } }, // On récupère la sauce correspondante
-			{
-				$inc: { likes: +1 }, // On incrémente les likes de +1
-				$push: { usersLiked: userId }, // On ajoute le user dans le tableau
-			}
-		)
-			.then(() => res.status(201).json({ message: "Vous avez aimé cette sauce !" }))
-			.catch((error) => res.status(400).json({ error }));
-	}
-	if (like === -1) {
-		db.Post.updateOne(
-			{ id: postId },
-			{
-				$inc: { dislikes: +1 }, // On incrémente les likes de +1
-				$push: { usersDisliked: userId }, // On ajoute le user dans le tableau
-			}
-		)
-			.then(() => res.status(201).json({ message: "Vous n'avez aimé cette sauce !" }))
-			.catch((error) => res.status(400).json({ error }));
-	}
-	if (like === 0) {
-		// Si il s'agit d'annuler un like ou un dislike
-		Sauce.findOne({ _id: sauceId })
-			.then((sauce) => {
-				if (sauce.usersLiked.includes(userId)) {
-					// Si l'utilisateur est dans le tableau des likes(il a déjà noté la sauce)
-					Sauce.updateOne(
-						{ _id: sauceId },
-						{
-							$inc: { likes: -1 }, // On incrémente les likes de -1
-							$pull: { usersLiked: userId }, // On retire le user du tableau
-						}
-					)
-						.then(() => res.status(201).json({ message: "Votre mention 'j'aime' a été retirée !" }))
-						.catch((error) => res.status(400).json({ error }));
-				}
-				if (sauce.usersDisliked.includes(userId)) {
-					// Si l'utilisateur est dans le tableau des dislikes(il a déjà noté la sauce)
-					Sauce.updateOne(
-						{ _id: sauceId },
-						{
-							$inc: { dislikes: -1 }, // On incrémente les likes de -1
-							$pull: { usersDisliked: userId }, // On retire le user du tableau
-						}
-					)
-						.then(() =>
-							res.status(201).json({ message: "Votre mention 'je n'aime pas' a été retirée !" })
-						)
-						.catch((error) => res.status(400).json({ error }));
-				}
-			})
-			.catch((error) => res.status(404).json({ error }));
-	}
+				.catch((error) => res.status(500).json({ error }));
+		} else {
+			res.status(401).json("Vous ne pouvez pas supprimer cette publication");
+			console.log("Vous ne pouvez pas supprimer cette publication");
+		}
+	});
 };

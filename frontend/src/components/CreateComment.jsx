@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Image } from "react-bootstrap";
 import jwt_decode from "jwt-decode";
 import Axios from "axios";
 
 export default function CreateComment(post) {
+	const [ignored, forceUpdate] = useReducer((x) => x + 1, 0);
+
 	// console.log(post.post.id);
 	const avatarUrl = "http://localhost:5000/avatars/";
 	const [user, setUser] = useState("");
@@ -50,8 +52,8 @@ export default function CreateComment(post) {
 			}
 		)
 			.then((response) => {
-				// console.log(response);
-				// console.log(comment);
+				forceUpdate();
+				console.log(response);
 			})
 			.catch((err) => console.log(err));
 	};

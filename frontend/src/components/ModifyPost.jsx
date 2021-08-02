@@ -1,4 +1,4 @@
-import { faImages, faVideo } from "@fortawesome/free-solid-svg-icons";
+import { faImages } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
@@ -6,14 +6,20 @@ import { Button, Col, Container, Form, Image, Modal, Row } from "react-bootstrap
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
 function ModifyPost(post) {
+	console.log(post);
 	const imgUrl = "http://localhost:5000/images/";
 
 	const [imageContent, setImageContent] = useState(null);
 	const [previewContent, setPreviewContent] = useState(null);
 	const imgInputRef = useRef(null);
-	const videoInputRef = useRef(null);
+
+	const value = `; ${document.cookie}`;
+	const parts = value.split(`; token=`);
+	const token = parts.pop().split(";").shift();
 
 	const currentImg = post.post.postImg;
+	const id = post.post.id;
+
 	useEffect(() => {
 		if (imageContent) {
 			const reader = new FileReader();
@@ -33,7 +39,6 @@ function ModifyPost(post) {
 	/// Fonction pour afficher la preview de l'image
 	const handleImageChange = (e) => {
 		const selected = e.target.files[0];
-		console.log(selected);
 		if (selected) {
 			setImageContent(selected);
 		} else {
@@ -46,39 +51,51 @@ function ModifyPost(post) {
 	const handleClose = () => setShow(false);
 	const handleShow = () => {
 		setShow(true);
-		console.log(post.post.postImg);
 	};
 
 	const [title, setTitle] = useState("");
-	const [postImg, setPostImg] = useState("");
+	const [file, setFile] = useState();
 
 	const handleModify = (e) => {
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; token=`);
-		const token = parts.pop().split(";").shift();
-		const id = post.post.id;
-		console.log(id);
 		e.preventDefault();
-		Axios.post(
-			"http://localhost:5000/posts/" + id,
-			{
-				title: title,
-				postImg: postImg,
-			},
+		console.log(post);
+		let formData = new FormData();
+		{
+			title
+				? formData.append("postTitle", title)
+				: formData.append("postTitle", post.post.postTitle);
+		}
+		{
+			file ? formData.append("postImg", file) : formData.append("postImg", null);
+		}
+		// formData.append("postTitle", title);
+		// formData.append("postImg", file);
+		Axios.put(
+			"http://localhost:5000/api/posts/" + id,
+			formData,
+			// {
+			// 	postTitle: title,
+			// 	postImg: file,
+			// },
 			{
 				headers: {
 					Authorization: "Bearer " + token,
 				},
 			}
-		).then((response) => {
-			console.log(response);
-			handleClose();
-		});
+		)
+			.then((response) => {
+				console.log("Votre publication a été modifiée");
+				handleClose();
+			})
+			.catch((err) => {
+				console.log(err, "Vous ne pouvez pas modifier cette publication");
+				window.alert("Vous ne pouvez pas modifier cette publication");
+			});
 	};
 
 	/// Fonction pour selectionner l'adresse de l'image à envoyer dans la BDD
 	const selectImg = (e) => {
-		setPostImg(e.target.value);
+		setFile(e.target.files[0]);
 	};
 
 	/// Fonction qui regroupe
@@ -87,24 +104,22 @@ function ModifyPost(post) {
 		handleImageChange(e);
 	};
 
-	const handleDelete = (props) => {
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; token=`);
-		const token = parts.pop().split(";").shift();
-
-		// Axios
-		// 	.get("http://localhost:5000/api/posts/"  {
-		// 		headers: {
-		// 			Authorization: "Bearer " + token,
-		// 		},
-		// 	})
-		// 	.then(() => {
-		// 		props.deletePost(props.ModifyPost.id);
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 		);
-		// 	});
+	const handleDelete = () => {
+		window.confirm("Voulez vous vraiment supprimer votre publication ?");
+		Axios.delete(`http://localhost:5000/api/posts/delete/` + id, {
+			headers: {
+				Authorization: "Bearer " + token,
+			},
+		})
+			.then(() => {
+				console.log("Publication supprimée");
+				handleClose();
+				// window.location.href = "/home";
+			})
+			.catch((err) => {
+				console.log(err, "Vous ne pouvez pas supprimer cette publication");
+				window.alert("Vous ne pouvez pas supprimer cette publication");
+			});
 	};
 
 	return (
@@ -152,24 +167,13 @@ function ModifyPost(post) {
 									<input
 										type="file"
 										accept="image/*"
+										name="postImg"
+										id="postImg"
 										onChange={validateImg}
 										ref={imgInputRef}
 										style={{ display: "none" }}
 									/>
 									<span>Modifier votre photo</span>
-								</Button>
-							</Col>
-							<Col>
-								<Button className="modifyPost__input" onClick={() => onButtonClick(videoInputRef)}>
-									<FontAwesomeIcon icon={faVideo} size="2x" />
-									<input
-										type="file"
-										accept="video/*"
-										onChange={validateImg}
-										ref={videoInputRef}
-										style={{ display: "none" }}
-									/>
-									<span>Modifier votre vidéo</span>
 								</Button>
 							</Col>
 						</Row>

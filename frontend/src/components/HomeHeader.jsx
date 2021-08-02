@@ -5,7 +5,7 @@ import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { Image } from "react-bootstrap";
 import { useEffect } from "react";
 import Axios from "axios";
-import { Logout } from "./Logout";
+import { Logout } from "../functions/Logout";
 import jwt_decode from "jwt-decode";
 
 export default function HomeHeader() {

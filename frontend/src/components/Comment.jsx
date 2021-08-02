@@ -1,12 +1,19 @@
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
+import DeleteComment from "./DeleteComment";
+import jwt_decode from "jwt-decode";
 
 export default function Comment(post) {
 	const avatarUrl = "http://localhost:5000/avatars/";
 	const value = `; ${document.cookie}`;
 	const parts = value.split(`; token=`);
 	const token = parts.pop().split(";").shift();
+	const decoded = jwt_decode(token);
+	const userId = decoded.userId;
+	console.log(userId);
 
 	/// Import des données des commentaires ////
 	const [comments, setComments] = useState([]);
@@ -17,7 +24,7 @@ export default function Comment(post) {
 			},
 		})
 			.then((response) => {
-				console.log(response.data);
+				// console.log(response.data);
 				setComments(response.data);
 			})
 			.catch((err) => {
@@ -26,7 +33,7 @@ export default function Comment(post) {
 			});
 	}, [token]);
 
-	// console.log(comments.postId);
+	console.log(comments);
 
 	return (
 		<>
@@ -46,10 +53,13 @@ export default function Comment(post) {
 									roundedCircle
 								/>
 								<div className="comment__comment">
-									<div className="comment__name">
-										{comment.User.firstname} {comment.User.lastname}
+									<div className="comment__detail">
+										<div className="comment__name">
+											{comment.User.firstname} {comment.User.lastname}
+										</div>
+										<div className="comment__text">{comment.commentText}</div>
 									</div>
-									<div className="comment__text">{comment.commentText}</div>
+									{comment.UserId === userId ? <DeleteComment comment={comment} /> : null}
 								</div>
 							</div>
 						</div>

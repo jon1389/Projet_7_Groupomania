@@ -4,14 +4,9 @@ const router = express.Router();
 const commentCtrl = require("../controllers/commentController");
 const auth = require("../middlewares/auth");
 
-// router.post("/", auth, multer, postCtrl.createPost);
-
-/////////// version Postman //////////
-router.post("/:idPost", commentCtrl.createComment);
+router.post("/:idPost", auth, commentCtrl.createComment);
 router.get("/", commentCtrl.getAllComments);
-router.get("/:id", commentCtrl.getCommentById);
-
-// router.get("/", auth, postCtrl.getAllPosts);
-// router.delete("/:id", auth, commentCtrl.deletePost);
+router.get("/:id", auth, commentCtrl.getCommentById);
+router.delete("/:id", auth, commentCtrl.deleteComment);
 
 module.exports = router;

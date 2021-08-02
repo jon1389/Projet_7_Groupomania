@@ -9,22 +9,25 @@ module.exports = (sequelize, DataTypes) => {
 		 */
 		static associate(models) {
 			models.Post.belongsTo(models.User, {
-				foreignKey: {
-					allowNull: false,
-				},
-				onDelete: "cascade",
+				foreignKey: "UserId",
+				onDelete: "CASCADE",
 			});
 
-			models.Post.hasMany(models.Comment, { onDelete: "cascade" });
+			models.Post.hasMany(models.Comment);
 		}
 	}
 	Post.init(
 		{
 			postTitle: {
 				type: DataTypes.STRING,
+				defaultValue: "",
 			},
 			postImg: {
 				type: DataTypes.STRING,
+				allowNull: false,
+			},
+			UserId: {
+				type: DataTypes.INTEGER,
 				allowNull: false,
 			},
 		},

@@ -16,9 +16,8 @@ const multer = require("../middlewares/multer-post");
 /////////// version API //////////
 router.get("/", postCtrl.getAllPosts);
 router.get("/:id", auth, postCtrl.getCurrentPost);
-router.delete("/:id", auth, postCtrl.deletePost);
-router.put("/:id", auth, postCtrl.modifyPost);
+router.delete("/delete/:id", postCtrl.deletePost);
+router.put("/:id", auth, multer, postCtrl.modifyPost);
 router.post("/", auth, multer, postCtrl.createPost);
-router.post("/:id/like", auth, postCtrl.LikePost);
 
 module.exports = router;

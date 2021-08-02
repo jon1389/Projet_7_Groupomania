@@ -1,28 +1,29 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-	class Comment extends Model {
+	class Dislike extends Model {
 		/**
 		 * Helper method for defining associations.
 		 * This method is not a part of Sequelize lifecycle.
 		 * The `models/index` file will call this method automatically.
 		 */
 		static associate(models) {
-			models.Comment.belongsTo(models.User, {
+			models.Dislike.belongsTo(models.User, {
 				foreignKey: "UserId",
 				onDelete: "CASCADE",
 			});
-			models.Comment.belongsTo(models.Post, {
+			models.Dislike.belongsTo(models.Post, {
 				foreignKey: "PostId",
 				onDelete: "CASCADE",
 			});
 		}
 	}
-	Comment.init(
+	Dislike.init(
 		{
-			commentText: {
-				type: DataTypes.STRING,
+			dislike: {
+				type: DataTypes.INTEGER,
 				allowNull: false,
+				defaultValue: 0,
 			},
 			UserId: {
 				type: DataTypes.INTEGER,
@@ -35,8 +36,8 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			sequelize,
-			modelName: "Comment",
+			modelName: "Dislike",
 		}
 	);
-	return Comment;
+	return Dislike;
 };

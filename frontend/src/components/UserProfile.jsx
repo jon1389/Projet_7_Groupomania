@@ -1,11 +1,12 @@
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Container, Image } from "react-bootstrap";
-import { Logout } from "./Logout";
+import { Logout } from "../functions/Logout";
 import jwt_decode from "jwt-decode";
 
 export default function UserProfile() {
 	const url = "http://localhost:5000/avatars/";
+
 	const [user, setUser] = useState("");
 
 	const value = `; ${document.cookie}`;
@@ -20,7 +21,7 @@ export default function UserProfile() {
 			},
 		}).then((response) => {
 			setUser(response.data);
-			console.log(response.data);
+			// console.log(response.data);
 		});
 	}, [id, token]);
 
@@ -61,7 +62,7 @@ export default function UserProfile() {
 				<Button className="profile__footer__btn" variant="danger" onClick={handleDelete}>
 					Supprimer votre compte
 				</Button>
-				<a href="/home " className="profile__footer__btn btn btn-primary">
+				<a href="/home " className="profile__footer__btn btn btn-secondary">
 					Retour
 				</a>
 			</div>

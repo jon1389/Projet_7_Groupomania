@@ -89,13 +89,13 @@ export default function Post() {
 								/>
 							</div>
 							<div className="post__bottom">
-								<LikeDislike />
+								<LikeDislike post={post} />
 								<button
 									className="post__bottomRight"
 									onClick={() => setShowComment((prev) => !prev)}
 								>
 									<Image src="../assets/comment.png" className="post__bottomRight__icon" />
-									<span className="post__bottom__text">0 commentaires</span>
+									<span className="post__bottom__text">{post.Comments.length} commentaires</span>
 								</button>
 							</div>
 						</div>

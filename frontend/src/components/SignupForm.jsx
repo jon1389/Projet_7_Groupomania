@@ -1,7 +1,7 @@
 import Container from "react-bootstrap/esm/Container";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import Image from "react-bootstrap/Image";
-import { checkAlpha, checkPassword, checkEmail } from "./CheckInputs";
+import { checkAlpha, checkPassword, checkEmail } from "../functions/CheckInputs";
 import { useEffect, useRef, useState } from "react";
 import Axios from "axios";
 
@@ -67,7 +67,7 @@ export default function SignupForm() {
 					"; path=/; SameSite=Strict";
 				console.log(userImg.current.files);
 				console.log(userImg.current.files[0]);
-				// window.location.href = "/login";
+				window.location.href = "/login";
 			})
 			.catch((error) => {
 				console.log("Echec de la connexion : ", error);
