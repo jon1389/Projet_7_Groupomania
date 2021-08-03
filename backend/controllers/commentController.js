@@ -4,16 +4,13 @@ const jwt = require("jsonwebtoken");
 exports.createComment = (req, res, next) => {
 	const token = req.headers.authorization.split(" ")[1];
 	const decoded = jwt.decode(token, { complete: true });
-	// console.log(req.body.comment);
 	db.Comment.create({
 		commentText: req.body.comment,
 		PostId: req.params.idPost,
 		UserId: decoded.payload.userId,
 	})
 		.then((comment) => res.status(201).json({ comment }))
-		.catch((err) => {
-			res.send("ERROR: " + err);
-		});
+		.catch((error) => res.status(400).json({ error }));
 };
 
 exports.getAllComments = (req, res, next) => {
@@ -22,10 +19,9 @@ exports.getAllComments = (req, res, next) => {
 		order: [["createdAt", "ASC"]],
 	})
 		.then((comments) => {
-			// console.log(comments);
 			res.status(200).json(comments);
 		})
-		.catch((error) => res.status(500).json({ error }));
+		.catch((error) => res.status(404).json({ error }));
 };
 
 exports.getCommentById = (req, res, next) => {
@@ -37,10 +33,9 @@ exports.getCommentById = (req, res, next) => {
 		include: [db.User, db.Post],
 	})
 		.then((comments) => {
-			console.log(comments);
 			res.status(200).json(comments);
 		})
-		.catch((error) => res.status(500).json({ error }));
+		.catch((error) => res.status(404).json({ error }));
 };
 
 exports.deleteComment = (req, res, next) => {

@@ -8,8 +8,8 @@ import jwt_decode from "jwt-decode";
 export default function CreatePost() {
 	const url = "http://localhost:5000/avatars/";
 
+	/// Récupération des données de l'utilisateur ///
 	const [user, setUser] = useState("");
-
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
 		const decoded = jwt_decode(token);
@@ -23,10 +23,10 @@ export default function CreatePost() {
 		});
 	}, []);
 
+	/// Selectionner et afficher la preview ///
 	const [imageContent, setImageContent] = useState(null);
 	const [previewContent, setPreviewContent] = useState(null);
 	const imgInputRef = useRef(null);
-
 	useEffect(() => {
 		if (imageContent) {
 			const reader = new FileReader();
@@ -38,12 +38,9 @@ export default function CreatePost() {
 			setPreviewContent("./assets/preview.jpg");
 		}
 	}, [imageContent]);
-
 	const onButtonClick = (ref) => {
 		ref.current.click();
 	};
-
-	/// Fonction pour afficher la preview de l'image
 	const handleImageChange = (e) => {
 		const selected = e.target.files[0];
 		if (selected) {
@@ -53,29 +50,26 @@ export default function CreatePost() {
 		}
 	};
 
+	/// Afficher ou fermer la modal ///
 	const [show, setShow] = useState(false);
-
 	const handleClose = () => setShow(false);
 	const handleShow = () => {
 		setShow(true);
 	};
 
+	/// Poster une publication ///
 	const [title, setTitle] = useState();
 	const [file, setFile] = useState();
-
 	const selectImg = (e) => {
 		setFile(e.target.files[0]);
 	};
-
 	const selectTitle = (e) => {
 		setTitle(e.target.value);
 	};
-
 	const validateImg = (e) => {
 		selectImg(e);
 		handleImageChange(e);
 	};
-
 	const handlePost = (e) => {
 		e.preventDefault();
 		const token = sessionStorage.getItem("token");
@@ -120,7 +114,6 @@ export default function CreatePost() {
 									as="textarea"
 									className="CreatePost__text"
 									onChange={selectTitle}
-									// onClick={handleShow}
 									placeholder="Mettez un titre à votre publication (50 caractères max)"
 									maxLength="50"
 								/>

@@ -7,16 +7,15 @@ import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
 function ModifyPost(postContent) {
 	const imgUrl = "http://localhost:5000/images/";
+	const token = sessionStorage.getItem("token");
 
 	const [imageContent, setImageContent] = useState(null);
 	const [previewContent, setPreviewContent] = useState(null);
 	const imgInputRef = useRef(null);
-
-	const token = sessionStorage.getItem("token");
-
 	const currentImg = postContent.postContent.postImg;
 	const id = postContent.postContent.id;
 
+	/// Selectionner et afficher la preview ///
 	useEffect(() => {
 		if (imageContent) {
 			const reader = new FileReader();
@@ -33,7 +32,6 @@ function ModifyPost(postContent) {
 		ref.current.click();
 	};
 
-	/// Fonction pour afficher la preview de l'image
 	const handleImageChange = (e) => {
 		const selected = e.target.files[0];
 		if (selected) {
@@ -43,16 +41,25 @@ function ModifyPost(postContent) {
 		}
 	};
 
+	/// afficher la modal ///
 	const [show, setShow] = useState(false);
-
 	const handleClose = () => setShow(false);
 	const handleShow = () => {
 		setShow(true);
 	};
 
+	/// Fonction pour selectionner l'adresse de l'image à envoyer dans la BDD ///
+	const selectImg = (e) => {
+		setFile(e.target.files[0]);
+	};
 	const [title, setTitle] = useState("");
 	const [file, setFile] = useState();
+	const validateImg = (e) => {
+		selectImg(e);
+		handleImageChange(e);
+	};
 
+	/// Modifier la publication ///
 	const handleModify = (e) => {
 		e.preventDefault();
 		let formData = new FormData();
@@ -63,28 +70,17 @@ function ModifyPost(postContent) {
 				Authorization: "Bearer " + token,
 			},
 		})
-			.then((response) => {
+			.then(() => {
 				console.log("Votre publication a été modifiée");
 				postContent.HandleUpdate();
 				handleClose();
 			})
-			.catch((err) => {
-				console.log(err, "Vous ne pouvez pas modifier cette publication");
-				// window.alert("Vous ne pouvez pas modifier cette publication");
+			.catch((error) => {
+				console.log(error, "Vous ne pouvez pas modifier cette publication");
 			});
 	};
 
-	/// Fonction pour selectionner l'adresse de l'image à envoyer dans la BDD
-	const selectImg = (e) => {
-		setFile(e.target.files[0]);
-	};
-
-	/// Fonction qui regroupe
-	const validateImg = (e) => {
-		selectImg(e);
-		handleImageChange(e);
-	};
-
+	/// Supprimer la publication ///
 	const handleDelete = () => {
 		const confirmation = window.confirm("Voulez vous vraiment supprimer votre publication ?");
 		if (!confirmation) return;
@@ -98,8 +94,8 @@ function ModifyPost(postContent) {
 				handleClose();
 				window.location.href = "/home";
 			})
-			.catch((err) => {
-				console.log(err, "Vous ne pouvez pas supprimer cette publication");
+			.catch((error) => {
+				console.log(error, "Vous ne pouvez pas supprimer cette publication");
 				window.alert("Vous ne pouvez pas supprimer cette publication");
 			});
 	};

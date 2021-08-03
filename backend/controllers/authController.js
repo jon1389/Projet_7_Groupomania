@@ -59,14 +59,10 @@ exports.signup = (req, res, next) => {
 							});
 						})
 						.catch((error) => {
-							const message = `probleme : ${error}`;
-							console.log(message);
 							res.status(400).json({ error });
 						});
 				})
 				.catch((error) => {
-					const message = `probleme : ${error}`;
-					console.log(message);
 					res.status(500).send({ error });
 				});
 		} else {
@@ -99,11 +95,7 @@ exports.login = (req, res, next) => {
 						}),
 					});
 				})
-				.catch((err) => {
-					res.send("ERROR: " + err);
-				});
+				.catch((error) => res.status(500).json({ error }));
 		})
-		.catch((err) => {
-			res.send("ERROR: " + err);
-		});
+		.catch((error) => res.status(500).json({ error }));
 };

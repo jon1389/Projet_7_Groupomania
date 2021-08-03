@@ -27,11 +27,9 @@ export default function App() {
 				</Route>
 				<Route path="/profile">{isAuthenticated ? <Profile /> : <Login />}</Route>
 				<Route exact path="/login">
-					{/* <Login /> */}
 					{isAuthenticated ? <Redirect to="/home" /> : <Login />}
 				</Route>
 				<Route exact path="/signup">
-					{/* <Signup /> */}
 					{isAuthenticated ? <Redirect to="/home" /> : <Signup />}
 				</Route>
 				<Route path="/home">{isAuthenticated ? <Home /> : <Redirect to="/login" />}</Route>

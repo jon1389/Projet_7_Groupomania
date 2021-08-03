@@ -13,6 +13,7 @@ export default function HomeHeader() {
 
 	const [user, setUser] = useState("");
 
+	/// Récupération des données de l'utilisateur ///
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
 		const decoded = jwt_decode(token);
@@ -23,7 +24,6 @@ export default function HomeHeader() {
 			},
 		}).then((response) => {
 			setUser(response.data);
-			// console.log(decoded);
 		});
 	}, []);
 
@@ -45,8 +45,6 @@ export default function HomeHeader() {
 							className="homeHeader__navbar__icon"
 							roundedCircle
 						/>
-						{/* <Image src="../assets/white_avatar.png" className="homeHeader__navbar__icon" roundedCircle/> */}
-						{/* <span className='homeHeader__navbar__text'>nom</span> */}
 						<span className="homeHeader__navbar__text">
 							{user.firstname} {user.lastname}
 						</span>

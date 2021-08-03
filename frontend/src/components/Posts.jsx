@@ -15,6 +15,7 @@ export default function Post() {
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
 
+	/// Récupération des données de l'utilisateur ///
 	const [user, setUser] = useState("");
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
@@ -29,14 +30,15 @@ export default function Post() {
 		});
 	}, []);
 
+	/// Vérifier si l'utilisateur est bien connecté/autorisé ///
 	const [connected, setConnected] = useState();
 	useEffect(() => {
 		if (token) setConnected(true);
 		else setConnected(false);
 	}, [token]);
 
+	/// Fonction pour le re-render ///
 	const [isUpdate, setIsUpdate] = useState(false);
-
 	function HandleUpdate() {
 		if (isUpdate === true) {
 			setIsUpdate(false);
@@ -47,6 +49,7 @@ export default function Post() {
 
 	const [showComment, setShowComment] = useState(false);
 
+	/// Récupération des publications ///
 	const [post, setPost] = useState([]);
 	useEffect(() => {
 		Axios.get("http://localhost:5000/api/posts", {
@@ -55,15 +58,14 @@ export default function Post() {
 			},
 		})
 			.then((response) => {
-				// console.log(response.data);
 				setPost(response.data);
 			})
 			.catch((err) => {
 				console.log(err);
-				// window.alert('Une erreur est survenue, veuillez réessayer plus tard. Si le problème persiste, contactez l\'administrateur du site');
 			});
 	}, [token, isUpdate]);
 
+	/// Commenter la publication ///
 	const [comment, setComment] = useState();
 	const selectTextComment = (e) => {
 		setComment(e.target.value);
@@ -119,7 +121,6 @@ export default function Post() {
 											{postContent.UserId === userId ? (
 												<ModifyPost postContent={postContent} HandleUpdate={HandleUpdate} />
 											) : null}
-											{/* <ModifyPost post={post} /> */}
 										</div>
 									</div>
 									<hr />

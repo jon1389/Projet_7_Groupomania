@@ -4,11 +4,10 @@ import jwt_decode from "jwt-decode";
 import Axios from "axios";
 
 export default function CreateComment(post, handleUpdate) {
-	// console.log(post.post.id);
 	const avatarUrl = "http://localhost:5000/avatars/";
 	const [user, setUser] = useState("");
 
-	////// Récupérer les informations de l'utilisateur connecté /////
+	/// Récupérer les informations de l'utilisateur connecté ///
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
 		const decoded = jwt_decode(token);
@@ -19,17 +18,15 @@ export default function CreateComment(post, handleUpdate) {
 			},
 		}).then((response) => {
 			setUser(response.data);
-			// console.log(response.data);
 		});
 	}, [handleUpdate]);
 
+	/// Poster un commentaire ///
 	const [comment, setComment] = useState();
-
 	const selectTextComment = (e) => {
 		setComment(e.target.value);
 	};
 	const [, setCount] = useState(0);
-
 	const handleComment = () => {
 		const id = post.post.id;
 		const token = sessionStorage.getItem("token");
@@ -51,12 +48,6 @@ export default function CreateComment(post, handleUpdate) {
 			.catch((err) => console.log(err));
 	};
 
-	const handleKeyDown = (event) => {
-		if (event.key === "Enter") {
-			handleComment(post.id);
-		}
-	};
-
 	return (
 		<form className="sendComment">
 			<Image
@@ -69,7 +60,6 @@ export default function CreateComment(post, handleUpdate) {
 				className="sendComment__input"
 				placeholder="Écrivez un commentaire..."
 				onChange={selectTextComment}
-				onKeyDown={handleKeyDown}
 			/>
 			<Image
 				type="submit"

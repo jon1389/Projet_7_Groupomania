@@ -11,7 +11,6 @@ const userRoutes = require("./routes/userRoutes");
 const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 
-// Configuring CORS Headers
 app.use((req, res, next) => {
 	res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
 	res.setHeader(
@@ -37,8 +36,6 @@ db.sequelize
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/avatars", express.static(path.join(__dirname, "avatars")));
-
-// db.sequelize.sync({ alter: true });
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);

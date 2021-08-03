@@ -14,6 +14,7 @@ export default function SignupForm() {
 	const email = useRef();
 	const password = useRef();
 
+	/// Selectionner et afficher la preview ///
 	useEffect(() => {
 		if (image) {
 			const reader = new FileReader();
@@ -25,7 +26,6 @@ export default function SignupForm() {
 			setPreview("../assets/black_avatar.png");
 		}
 	}, [image]);
-
 	const handleImageChange = (e) => {
 		const selected = e.target.files[0];
 		if (selected) {
@@ -34,16 +34,13 @@ export default function SignupForm() {
 			setImage(null);
 		}
 	};
-
 	const addImageBtn = () => {
 		userImg.current.click();
 	};
 
-	// Axios.defaults.withCredentials = true;
-
+	/// Créer un compte ///
 	const handleSignup = (e) => {
 		e.preventDefault();
-
 		const formData = new FormData();
 		formData.append("firstname", firstname.current.value);
 		formData.append("lastname", lastname.current.value);

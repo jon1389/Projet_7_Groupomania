@@ -8,9 +8,9 @@ export default function LoginForm() {
 	const email = useRef();
 	const password = useRef();
 
+	/// Se connecter ///
 	const handleLogin = (e) => {
 		e.preventDefault();
-
 		const userLogin = {
 			email: email.current.value,
 			password: password.current.value,

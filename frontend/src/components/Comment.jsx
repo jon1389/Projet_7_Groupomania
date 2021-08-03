@@ -13,8 +13,8 @@ export default function Comment(postContent, isUpdate) {
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
 
+	/// fonction pour le re-render de DeleteComment ///
 	const [deleteComment, setDeleteComment] = useState(false);
-
 	function HandleDeleteComment() {
 		if (deleteComment === true) {
 			setDeleteComment(false);
@@ -22,9 +22,9 @@ export default function Comment(postContent, isUpdate) {
 			setDeleteComment(true);
 		}
 	}
+
 	/// Import des données des commentaires ////
 	const [comments, setComments] = useState([]);
-
 	const isUpdated = postContent.isUpdate;
 	useEffect(() => {
 		Axios.get("http://localhost:5000/api/comments", {

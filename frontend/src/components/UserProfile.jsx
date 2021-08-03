@@ -6,12 +6,12 @@ import jwt_decode from "jwt-decode";
 
 export default function UserProfile() {
 	const url = "http://localhost:5000/avatars/";
-
-	const [user, setUser] = useState("");
-
 	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const id = decoded.userId;
+
+	/// Récupération des données de l'utilisateur ///
+	const [user, setUser] = useState("");
 	useEffect(() => {
 		Axios.get(`http://localhost:5000/api/users/` + id, {
 			headers: {
@@ -19,10 +19,10 @@ export default function UserProfile() {
 			},
 		}).then((response) => {
 			setUser(response.data);
-			// console.log(response.data);
 		});
 	}, [id, token]);
 
+	/// Supprimer le compte ///
 	const handleDelete = () => {
 		const confirmation = window.confirm("Voulez vous vraiment supprimer votre compte ?");
 		if (!confirmation) return;
