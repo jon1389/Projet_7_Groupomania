@@ -24,7 +24,8 @@ export default function UserProfile() {
 	}, [id, token]);
 
 	const handleDelete = () => {
-		window.confirm("Voulez vous vraiment supprimer votre compte ?");
+		const confirmation = window.confirm("Voulez vous vraiment supprimer votre compte ?");
+		if (!confirmation) return;
 		Axios.delete(`http://localhost:5000/api/users/delete/` + id, {
 			headers: {
 				Authorization: "Bearer " + token,

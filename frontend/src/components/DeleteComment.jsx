@@ -1,6 +1,5 @@
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
 import Axios from "axios";
 
 export default function DeleteComment(comments) {
@@ -8,12 +7,8 @@ export default function DeleteComment(comments) {
 
 	const id = comments.comment.id;
 
-	const [state, setState] = useState(false);
-
 	const deleteComment = () => {
-		setState(true);
 		const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer ce commentaire?");
-		console.log(confirmation);
 		if (!confirmation) return;
 		Axios.delete(`http://localhost:5000/api/comments/` + id, {
 			headers: {

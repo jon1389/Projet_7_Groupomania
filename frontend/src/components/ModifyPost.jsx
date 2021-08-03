@@ -58,36 +58,20 @@ function ModifyPost(post) {
 		e.preventDefault();
 		console.log(post);
 		let formData = new FormData();
-		{
-			title
-				? formData.append("postTitle", title)
-				: formData.append("postTitle", post.post.postTitle);
-		}
-		{
-			file ? formData.append("postImg", file) : formData.append("postImg", null);
-		}
-		// formData.append("postTitle", title);
-		// formData.append("postImg", file);
-		Axios.put(
-			"http://localhost:5000/api/posts/" + id,
-			formData,
-			// {
-			// 	postTitle: title,
-			// 	postImg: file,
-			// },
-			{
-				headers: {
-					Authorization: "Bearer " + token,
-				},
-			}
-		)
+		formData.append("postTitle", title);
+		formData.append("postImg", file);
+		Axios.put("http://localhost:5000/api/posts/" + id, formData, {
+			headers: {
+				Authorization: "Bearer " + token,
+			},
+		})
 			.then((response) => {
 				console.log("Votre publication a été modifiée");
 				handleClose();
 			})
 			.catch((err) => {
 				console.log(err, "Vous ne pouvez pas modifier cette publication");
-				window.alert("Vous ne pouvez pas modifier cette publication");
+				// window.alert("Vous ne pouvez pas modifier cette publication");
 			});
 	};
 
@@ -103,7 +87,8 @@ function ModifyPost(post) {
 	};
 
 	const handleDelete = () => {
-		window.confirm("Voulez vous vraiment supprimer votre publication ?");
+		const confirmation = window.confirm("Voulez vous vraiment supprimer votre publication ?");
+		if (!confirmation) return;
 		Axios.delete(`http://localhost:5000/api/posts/delete/` + id, {
 			headers: {
 				Authorization: "Bearer " + token,
@@ -112,7 +97,7 @@ function ModifyPost(post) {
 			.then(() => {
 				console.log("Publication supprimée");
 				handleClose();
-				// window.location.href = "/home";
+				window.location.href = "/home";
 			})
 			.catch((err) => {
 				console.log(err, "Vous ne pouvez pas supprimer cette publication");

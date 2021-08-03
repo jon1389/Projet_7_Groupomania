@@ -1,20 +1,20 @@
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
+const { NONE } = require("sequelize");
 
 const db = require("../models");
 
 exports.createPost = (req, res, next) => {
 	const token = req.headers.authorization.split(" ")[1];
 	const decoded = jwt.decode(token, { complete: true });
+	const title = req.body.postTitle == "undefined" ? (req.body.postTitle = "") : req.body.postTitle;
 	db.Post.create({
-		postTitle: req.body.postTitle,
+		postTitle: title,
 		postImg: req.file.filename,
 		UserId: decoded.payload.userId,
 	})
 		.then((post) => res.status(201).json({ post }))
-		.catch((err) => {
-			res.send("ERROR: " + err);
-		});
+		.catch((error) => res.status(500).json({ error }));
 };
 
 //// Obtenir les publications avec les utilisateurs liés
@@ -53,10 +53,12 @@ exports.modifyPost = (req, res, next) => {
 
 	db.Post.findOne({ where: { id: req.params.id } }).then((post) => {
 		if (post.UserId === decoded.payload.userId) {
+			const postPicture = req.file ? req.file.filename : post.postImg;
+			const title = req.body.postTitle ? req.body.postTitle : post.postTitle;
 			db.Post.update(
 				{
-					postTitle: req.body.postTitle,
-					postImg: req.file.filename,
+					postTitle: title,
+					postImg: postPicture,
 				},
 				{ where: { id: req.params.id } }
 			)

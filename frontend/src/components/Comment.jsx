@@ -6,8 +6,7 @@ import jwt_decode from "jwt-decode";
 import { format, register } from "timeago.js";
 import { Timeago } from "../functions/Timeago";
 
-export default function Comment(post, isUpdate, handleUpdate) {
-	console.log(isUpdate);
+export default function Comment(post) {
 	const avatarUrl = "http://localhost:5000/avatars/";
 	register("FR", Timeago);
 	const token = sessionStorage.getItem("token");
@@ -25,15 +24,13 @@ export default function Comment(post, isUpdate, handleUpdate) {
 			},
 		})
 			.then((response) => {
-				// console.log(response.data);
 				setComments(response.data);
-				isUpdate = "true";
 			})
 			.catch((err) => {
 				console.log(err);
 				// window.alert('Une erreur est survenue, veuillez réessayer plus tard. Si le problème persiste, contactez l\'administrateur du site');
 			});
-	}, [token, isUpdate, handleUpdate]);
+	}, [token]);
 
 	return (
 		<>
