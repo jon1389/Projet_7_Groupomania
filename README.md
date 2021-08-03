@@ -4,7 +4,7 @@
 
 ### Front-End
 
-**1.** Tapez `cd frontend` pour se rendre dans le dossier **frontend**
+**1.** Ouvrez un terminal et tapez `cd frontend` pour se rendre dans le dossier **frontend**
 
 **2.** Tapez `npm install` pour installer les dépendances du **frontend**
 
@@ -14,9 +14,9 @@
 
 ### Back-End
 
-**1.** `cd backend` pour se rendre dans le dossier **backend**
+**1.** Ouvrez un terminal et tapez `cd backend` pour se rendre dans le dossier **backend**
 
-**2.** `npm install` pour installer les dépendances du **backend**
+**2.** Tapez `npm install` pour installer les dépendances du **backend**
 
 **3.** Modifiez le fichier `config.json` par vos données de serveur **Mysql**
 
