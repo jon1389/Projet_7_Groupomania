@@ -11,7 +11,7 @@ export default function CreatePost() {
 	const [user, setUser] = useState("");
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
+		const token = sessionStorage.getItem("token");
 		const decoded = jwt_decode(token);
 		const id = decoded.userId;
 		Axios.get(`http://localhost:5000/api/users/` + id, {
@@ -78,7 +78,7 @@ export default function CreatePost() {
 
 	const handlePost = (e) => {
 		e.preventDefault();
-		const token = localStorage.getItem("token");
+		const token = sessionStorage.getItem("token");
 		let formData = new FormData();
 		formData.append("postTitle", title);
 		formData.append("postImg", file);

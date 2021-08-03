@@ -28,7 +28,7 @@ export default function LoginForm() {
 				const value = `; ${document.cookie}`;
 				const parts = value.split(`; token=`);
 				const token = parts.pop();
-				localStorage.setItem("token", token);
+				sessionStorage.setItem("token", token);
 				console.log(token);
 				const decoded = jwtDecode(token);
 				console.log(decoded);

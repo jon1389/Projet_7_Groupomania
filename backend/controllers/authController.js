@@ -51,7 +51,7 @@ exports.signup = (req, res, next) => {
 									{
 										userId: user.id,
 									},
-									process.env.TOKEN_ENCODED,
+									"random_token",
 									{ expiresIn: "24h" }
 								),
 								user,

@@ -14,7 +14,7 @@ export default function HomeHeader() {
 	const [user, setUser] = useState("");
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
+		const token = sessionStorage.getItem("token");
 		const decoded = jwt_decode(token);
 		const id = decoded.userId;
 		Axios.get(`http://localhost:5000/api/users/` + id, {

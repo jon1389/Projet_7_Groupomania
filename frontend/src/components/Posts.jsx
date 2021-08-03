@@ -14,7 +14,7 @@ export default function Post() {
 
 	const [connected, setConnected] = useState();
 	useEffect(() => {
-		if (localStorage.getItem("token")) setConnected(true);
+		if (sessionStorage.getItem("token")) setConnected(true);
 		else setConnected(false);
 	}, []);
 
@@ -28,7 +28,7 @@ export default function Post() {
 	register("FR", Timeago);
 
 	const [post, setPost] = useState([]);
-	const token = localStorage.getItem("token");
+	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
 	useEffect(() => {

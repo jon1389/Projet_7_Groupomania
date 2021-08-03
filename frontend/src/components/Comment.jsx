@@ -10,7 +10,7 @@ export default function Comment(post, isUpdate, handleUpdate) {
 	console.log(isUpdate);
 	const avatarUrl = "http://localhost:5000/avatars/";
 	register("FR", Timeago);
-	const token = localStorage.getItem("token");
+	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
 	// console.log(userId);

@@ -10,7 +10,7 @@ export default function CreateComment(post, handleUpdate) {
 
 	////// Récupérer les informations de l'utilisateur connecté /////
 	useEffect(() => {
-		const token = localStorage.getItem("token");
+		const token = sessionStorage.getItem("token");
 		const decoded = jwt_decode(token);
 		const id = decoded.userId;
 		Axios.get(`http://localhost:5000/api/users/` + id, {
@@ -32,7 +32,7 @@ export default function CreateComment(post, handleUpdate) {
 
 	const handleComment = () => {
 		const id = post.post.id;
-		const token = localStorage.getItem("token");
+		const token = sessionStorage.getItem("token");
 		Axios.post(
 			`http://localhost:5000/api/comments/${id}`,
 			{

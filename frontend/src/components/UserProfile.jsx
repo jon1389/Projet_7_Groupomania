@@ -9,7 +9,7 @@ export default function UserProfile() {
 
 	const [user, setUser] = useState("");
 
-	const token = localStorage.getItem("token");
+	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const id = decoded.userId;
 	useEffect(() => {
