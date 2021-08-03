@@ -4,9 +4,7 @@ import React, { useState } from "react";
 import Axios from "axios";
 
 export default function DeleteComment(comments) {
-	const value = `; ${document.cookie}`;
-	const parts = value.split(`; token=`);
-	const token = parts.pop().split(";").shift();
+	const token = localStorage.getItem("token");
 
 	const id = comments.comment.id;
 

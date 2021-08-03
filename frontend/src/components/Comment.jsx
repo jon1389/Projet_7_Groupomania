@@ -6,18 +6,18 @@ import jwt_decode from "jwt-decode";
 import { format, register } from "timeago.js";
 import { Timeago } from "../functions/Timeago";
 
-export default function Comment(post) {
+export default function Comment(post, isUpdate, handleUpdate) {
+	console.log(isUpdate);
 	const avatarUrl = "http://localhost:5000/avatars/";
 	register("FR", Timeago);
-	const value = `; ${document.cookie}`;
-	const parts = value.split(`; token=`);
-	const token = parts.pop().split(";").shift();
+	const token = localStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
 	// console.log(userId);
 
 	/// Import des données des commentaires ////
 	const [comments, setComments] = useState([]);
+
 	useEffect(() => {
 		Axios.get("http://localhost:5000/api/comments", {
 			headers: {
@@ -27,14 +27,13 @@ export default function Comment(post) {
 			.then((response) => {
 				// console.log(response.data);
 				setComments(response.data);
+				isUpdate = "true";
 			})
 			.catch((err) => {
 				console.log(err);
 				// window.alert('Une erreur est survenue, veuillez réessayer plus tard. Si le problème persiste, contactez l\'administrateur du site');
 			});
-	}, [token]);
-
-	console.log(comments);
+	}, [token, isUpdate, handleUpdate]);
 
 	return (
 		<>

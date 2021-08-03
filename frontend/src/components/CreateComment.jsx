@@ -3,16 +3,14 @@ import { Image } from "react-bootstrap";
 import jwt_decode from "jwt-decode";
 import Axios from "axios";
 
-export default function CreateComment(post) {
+export default function CreateComment(post, handleUpdate) {
 	// console.log(post.post.id);
 	const avatarUrl = "http://localhost:5000/avatars/";
 	const [user, setUser] = useState("");
 
 	////// Récupérer les informations de l'utilisateur connecté /////
 	useEffect(() => {
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; token=`);
-		const token = parts.pop().split(";").shift();
+		const token = localStorage.getItem("token");
 		const decoded = jwt_decode(token);
 		const id = decoded.userId;
 		Axios.get(`http://localhost:5000/api/users/` + id, {
@@ -23,7 +21,7 @@ export default function CreateComment(post) {
 			setUser(response.data);
 			// console.log(response.data);
 		});
-	}, []);
+	}, [handleUpdate]);
 
 	const [comment, setComment] = useState();
 
@@ -34,9 +32,7 @@ export default function CreateComment(post) {
 
 	const handleComment = () => {
 		const id = post.post.id;
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; token=`);
-		const token = parts.pop().split(";").shift();
+		const token = localStorage.getItem("token");
 		Axios.post(
 			`http://localhost:5000/api/comments/${id}`,
 			{

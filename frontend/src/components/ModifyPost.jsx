@@ -13,9 +13,7 @@ function ModifyPost(post) {
 	const [previewContent, setPreviewContent] = useState(null);
 	const imgInputRef = useRef(null);
 
-	const value = `; ${document.cookie}`;
-	const parts = value.split(`; token=`);
-	const token = parts.pop().split(";").shift();
+	const token = localStorage.getItem("token");
 
 	const currentImg = post.post.postImg;
 	const id = post.post.id;

@@ -1,4 +1,5 @@
 import Axios from "axios";
+import jwtDecode from "jwt-decode";
 import { useRef } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { checkEmail, checkPassword } from "../functions/CheckInputs";
@@ -26,8 +27,11 @@ export default function LoginForm() {
 					"; path=/; SameSite=Strict";
 				const value = `; ${document.cookie}`;
 				const parts = value.split(`; token=`);
-				const token = parts.pop().split(".").shift();
+				const token = parts.pop();
 				localStorage.setItem("token", token);
+				console.log(token);
+				const decoded = jwtDecode(token);
+				console.log(decoded);
 				window.location.href = "/";
 			})
 			.catch((error) => {

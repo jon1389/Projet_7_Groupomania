@@ -14,9 +14,7 @@ export default function HomeHeader() {
 	const [user, setUser] = useState("");
 
 	useEffect(() => {
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; token=`);
-		const token = parts.pop().split(";").shift();
+		const token = localStorage.getItem("token");
 		const decoded = jwt_decode(token);
 		const id = decoded.userId;
 		Axios.get(`http://localhost:5000/api/users/` + id, {

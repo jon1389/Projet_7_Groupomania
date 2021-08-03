@@ -9,7 +9,8 @@ export default function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	useEffect(() => {
-		if (document.cookie) {
+		const auth = localStorage.getItem("token");
+		if (auth) {
 			setIsAuthenticated(true);
 			console.log("Authentifié");
 		} else {
