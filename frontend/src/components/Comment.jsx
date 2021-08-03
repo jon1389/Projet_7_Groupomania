@@ -6,17 +6,26 @@ import jwt_decode from "jwt-decode";
 import { format, register } from "timeago.js";
 import { Timeago } from "../functions/Timeago";
 
-export default function Comment(post) {
+export default function Comment(postContent, isUpdate) {
 	const avatarUrl = "http://localhost:5000/avatars/";
 	register("FR", Timeago);
 	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
-	// console.log(userId);
 
+	const [deleteComment, setDeleteComment] = useState(false);
+
+	function HandleDeleteComment() {
+		if (deleteComment === true) {
+			setDeleteComment(false);
+		} else {
+			setDeleteComment(true);
+		}
+	}
 	/// Import des données des commentaires ////
 	const [comments, setComments] = useState([]);
 
+	const isUpdated = postContent.isUpdate;
 	useEffect(() => {
 		Axios.get("http://localhost:5000/api/comments", {
 			headers: {
@@ -28,16 +37,15 @@ export default function Comment(post) {
 			})
 			.catch((err) => {
 				console.log(err);
-				// window.alert('Une erreur est survenue, veuillez réessayer plus tard. Si le problème persiste, contactez l\'administrateur du site');
 			});
-	}, [token]);
+	}, [token, isUpdated, deleteComment]);
 
 	return (
 		<>
-			{comments.map((comment, key) => {
-				if (comment.PostId === post.post.id) {
+			{comments.map((comment, isUpdated) => {
+				if (comment.PostId === postContent.postContent.id) {
 					return (
-						<div key={key} className="comment">
+						<div key={isUpdated} className="comment">
 							<hr />
 							<div className="comment__area">
 								<Image
@@ -59,7 +67,9 @@ export default function Comment(post) {
 										</div>
 										<div className="comment__text">{comment.commentText}</div>
 									</div>
-									{comment.UserId === userId ? <DeleteComment comment={comment} /> : null}
+									{comment.UserId === userId ? (
+										<DeleteComment comment={comment} HandleDeleteComment={HandleDeleteComment} />
+									) : null}
 								</div>
 							</div>
 						</div>

@@ -4,33 +4,50 @@ import Axios from "axios";
 import { format, register } from "timeago.js";
 import { Timeago } from "../functions/Timeago";
 import Comment from "./Comment";
-import CreateComment from "./CreateComment";
 import ModifyPost from "./ModifyPost";
 import jwt_decode from "jwt-decode";
 
 export default function Post() {
 	const avatarUrl = "http://localhost:5000/avatars/";
 	const imgUrl = "http://localhost:5000/images/";
-
-	const [connected, setConnected] = useState();
-	useEffect(() => {
-		if (sessionStorage.getItem("token")) setConnected(true);
-		else setConnected(false);
-	}, []);
-
-	const [isUpdate, setIsUpdate] = useState(false);
-
-	function handleUpdate() {
-		setIsUpdate(true);
-	}
-
-	const [showComment, setShowComment] = useState(false);
 	register("FR", Timeago);
-
-	const [post, setPost] = useState([]);
 	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
+
+	const [user, setUser] = useState("");
+	useEffect(() => {
+		const token = sessionStorage.getItem("token");
+		const decoded = jwt_decode(token);
+		const id = decoded.userId;
+		Axios.get(`http://localhost:5000/api/users/` + id, {
+			headers: {
+				Authorization: "Bearer " + token,
+			},
+		}).then((response) => {
+			setUser(response.data);
+		});
+	}, []);
+
+	const [connected, setConnected] = useState();
+	useEffect(() => {
+		if (token) setConnected(true);
+		else setConnected(false);
+	}, [token]);
+
+	const [isUpdate, setIsUpdate] = useState(false);
+
+	function HandleUpdate() {
+		if (isUpdate === true) {
+			setIsUpdate(false);
+		} else {
+			setIsUpdate(true);
+		}
+	}
+
+	const [showComment, setShowComment] = useState(false);
+
+	const [post, setPost] = useState([]);
 	useEffect(() => {
 		Axios.get("http://localhost:5000/api/posts", {
 			headers: {
@@ -40,19 +57,43 @@ export default function Post() {
 			.then((response) => {
 				// console.log(response.data);
 				setPost(response.data);
-				handleUpdate();
 			})
 			.catch((err) => {
 				console.log(err);
 				// window.alert('Une erreur est survenue, veuillez réessayer plus tard. Si le problème persiste, contactez l\'administrateur du site');
 			});
-	}, [token]);
+	}, [token, isUpdate]);
+
+	const [comment, setComment] = useState();
+	const selectTextComment = (e) => {
+		setComment(e.target.value);
+	};
+	const handleComment = (postContent) => {
+		const id = postContent;
+		const token = sessionStorage.getItem("token");
+		Axios.post(
+			`http://localhost:5000/api/comments/${id}`,
+			{
+				comment,
+			},
+			{
+				headers: {
+					Authorization: "Bearer " + token,
+				},
+			}
+		)
+			.then((response) => {
+				console.log(response);
+				HandleUpdate();
+			})
+			.catch((err) => console.log(err));
+	};
 
 	return (
 		<>
 			{connected && (
 				<>
-					{post.map((post, key) => {
+					{post.map((postContent, key) => {
 						return (
 							<Container key={key} className="post">
 								<div className="post__container">
@@ -61,31 +102,33 @@ export default function Post() {
 											<img
 												className="post__topLeft__img"
 												src={
-													post.User.userImg
-														? avatarUrl + post.User.userImg
+													postContent.User.userImg
+														? avatarUrl + postContent.User.userImg
 														: "./assets/black_avatar.png"
 												}
 												alt="Profil"
 											/>
 											<span className="post__topLeft__username">
-												{post.User.firstname} {post.User.lastname}
+												{postContent.User.firstname} {postContent.User.lastname}
 											</span>
 											<span className="post__topLeft__date">
-												- posté {format(post.createdAt, "FR")}
+												- posté {format(postContent.createdAt, "FR")}
 											</span>
 										</div>
 										<div className="post__topRight">
-											{post.UserId === userId ? <ModifyPost post={post} /> : null}
+											{postContent.UserId === userId ? (
+												<ModifyPost postContent={postContent} HandleUpdate={HandleUpdate} />
+											) : null}
 											{/* <ModifyPost post={post} /> */}
 										</div>
 									</div>
 									<hr />
 									<div className="post__center">
-										<span className="post__center__text">{post.postTitle}</span>
+										<span className="post__center__text">{postContent.postTitle}</span>
 										<img
 											className="post__center__img"
-											src={`${imgUrl}${post.postImg}`}
-											alt={post.postImg}
+											src={`${imgUrl}${postContent.postImg}`}
+											alt={postContent.postImg}
 										/>
 									</div>
 									<div className="post__bottom">
@@ -95,16 +138,44 @@ export default function Post() {
 										>
 											<Image src="../assets/comment.png" className="post__bottomRight__icon" />
 											<span className="post__bottom__text">
-												{post.Comments.length} commentaires
+												{postContent.Comments.length} commentaires
 											</span>
 										</button>
 									</div>
 								</div>
 								{showComment && (
-									<Comment post={post} handleUpdate={handleUpdate} isUpdate={isUpdate} />
+									<Comment
+										postContent={postContent}
+										HandleUpdate={HandleUpdate}
+										isUpdate={isUpdate}
+									/>
 								)}
 								<hr />
-								<CreateComment post={post} handleUpdate={handleUpdate} />
+								<form className="sendComment">
+									<Image
+										src={
+											postContent.User.userImg
+												? `${avatarUrl}${user.userImg}`
+												: "./assets/black_avatar.png"
+										}
+										className="comment__avatar"
+										roundedCircle
+									/>
+									<input
+										as="textarea"
+										className="sendComment__input"
+										placeholder="Écrivez un commentaire..."
+										onChange={selectTextComment}
+									/>
+									<Image
+										type="submit"
+										src="./assets/plus.png"
+										className="sendComment__icon"
+										roundedCircle
+										role="button"
+										onClick={() => handleComment(postContent.id, postContent)}
+									/>
+								</form>
 							</Container>
 						);
 					})}

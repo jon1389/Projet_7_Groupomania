@@ -51,11 +51,11 @@ export default function CreateComment(post, handleUpdate) {
 			.catch((err) => console.log(err));
 	};
 
-	// const handleKeyDown = (event) => {
-	// 	if (event.key === "Enter") {
-	// 		handleComment(post.id);
-	// 	}
-	// };
+	const handleKeyDown = (event) => {
+		if (event.key === "Enter") {
+			handleComment(post.id);
+		}
+	};
 
 	return (
 		<form className="sendComment">
@@ -69,7 +69,7 @@ export default function CreateComment(post, handleUpdate) {
 				className="sendComment__input"
 				placeholder="Écrivez un commentaire..."
 				onChange={selectTextComment}
-				// onKeyDown={handleKeyDown}
+				onKeyDown={handleKeyDown}
 			/>
 			<Image
 				type="submit"

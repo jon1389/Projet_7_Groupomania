@@ -5,8 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Form, Image, Modal, Row } from "react-bootstrap";
 import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 
-function ModifyPost(post) {
-	// console.log(post);
+function ModifyPost(postContent) {
 	const imgUrl = "http://localhost:5000/images/";
 
 	const [imageContent, setImageContent] = useState(null);
@@ -15,8 +14,8 @@ function ModifyPost(post) {
 
 	const token = sessionStorage.getItem("token");
 
-	const currentImg = post.post.postImg;
-	const id = post.post.id;
+	const currentImg = postContent.postContent.postImg;
+	const id = postContent.postContent.id;
 
 	useEffect(() => {
 		if (imageContent) {
@@ -56,7 +55,6 @@ function ModifyPost(post) {
 
 	const handleModify = (e) => {
 		e.preventDefault();
-		console.log(post);
 		let formData = new FormData();
 		formData.append("postTitle", title);
 		formData.append("postImg", file);
@@ -67,6 +65,7 @@ function ModifyPost(post) {
 		})
 			.then((response) => {
 				console.log("Votre publication a été modifiée");
+				postContent.HandleUpdate();
 				handleClose();
 			})
 			.catch((err) => {

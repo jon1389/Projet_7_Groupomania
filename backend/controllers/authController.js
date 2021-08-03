@@ -50,6 +50,7 @@ exports.signup = (req, res, next) => {
 								token: jwt.sign(
 									{
 										userId: user.id,
+										userImg: user.userImg,
 									},
 									process.env.TOKEN_ENCODED,
 									{ expiresIn: "24h" }
@@ -92,6 +93,7 @@ exports.login = (req, res, next) => {
 					}
 					res.status(200).json({
 						userId: user.id,
+						userImg: user.userImg,
 						token: jwt.sign({ userId: user.id }, process.env.TOKEN_ENCODED, {
 							expiresIn: "24h",
 						}),

@@ -17,6 +17,7 @@ export default function DeleteComment(comments) {
 		})
 			.then(() => {
 				console.log("Publication supprimée");
+				comments.HandleDeleteComment();
 				// window.location.href = "/home";
 			})
 			.catch((err) => {
