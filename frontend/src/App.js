@@ -30,7 +30,7 @@ export default function App() {
 					{isAuthenticated ? <Redirect to="/home" /> : <Login />}
 				</Route>
 				<Route exact path="/signup">
-					{isAuthenticated ? <Redirect to="/home" /> : <Signup />}
+					{isAuthenticated ? <Redirect to="/login" /> : <Signup />}
 				</Route>
 				<Route path="/home">{isAuthenticated ? <Home /> : <Redirect to="/login" />}</Route>
 				<Route path="/logout">

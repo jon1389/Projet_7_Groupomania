@@ -1,6 +1,5 @@
 import Axios from "axios";
-import jwtDecode from "jwt-decode";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { checkEmail, checkPassword } from "../functions/CheckInputs";
 
@@ -9,6 +8,8 @@ export default function LoginForm() {
 	const password = useRef();
 
 	/// Se connecter ///
+
+	const [loginError, setLogingError] = useState("");
 	const handleLogin = (e) => {
 		e.preventDefault();
 		const userLogin = {
@@ -29,12 +30,11 @@ export default function LoginForm() {
 				const parts = value.split(`; token=`);
 				const token = parts.pop();
 				sessionStorage.setItem("token", token);
-				console.log(token);
-				const decoded = jwtDecode(token);
-				console.log(decoded);
 				window.location.href = "/";
 			})
 			.catch((error) => {
+				console.log(error.response.data.message);
+				setLogingError(error.response.data.message);
 				console.log("Echec de la connexion : ", error);
 			});
 	};
@@ -70,6 +70,7 @@ export default function LoginForm() {
 						symbole.
 					</Form.Control.Feedback>
 				</Form.Group>
+				<span className="login__error">{loginError}</span>
 				<Button variant="primary" type="submit" className="login__btn">
 					{/* {isFetching ? <Spinner animation="border" size="sm"/> : "Se connecter"} */}
 					Se connecter

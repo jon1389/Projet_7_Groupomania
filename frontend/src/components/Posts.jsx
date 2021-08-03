@@ -6,6 +6,7 @@ import { Timeago } from "../functions/Timeago";
 import Comment from "./Comment";
 import ModifyPost from "./ModifyPost";
 import jwt_decode from "jwt-decode";
+import CreatePost from "./CreatePost";
 
 export default function Post() {
 	const avatarUrl = "http://localhost:5000/avatars/";
@@ -14,21 +15,7 @@ export default function Post() {
 	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
-
-	/// Récupération des données de l'utilisateur ///
-	const [user, setUser] = useState("");
-	useEffect(() => {
-		const token = sessionStorage.getItem("token");
-		const decoded = jwt_decode(token);
-		const id = decoded.userId;
-		Axios.get(`http://localhost:5000/api/users/` + id, {
-			headers: {
-				Authorization: "Bearer " + token,
-			},
-		}).then((response) => {
-			setUser(response.data);
-		});
-	}, []);
+	const userImg = decoded.userImg;
 
 	/// Vérifier si l'utilisateur est bien connecté/autorisé ///
 	const [connected, setConnected] = useState();
@@ -73,26 +60,32 @@ export default function Post() {
 	const handleComment = (postContent) => {
 		const id = postContent;
 		const token = sessionStorage.getItem("token");
-		Axios.post(
-			`http://localhost:5000/api/comments/${id}`,
-			{
-				comment,
-			},
-			{
-				headers: {
-					Authorization: "Bearer " + token,
+
+		if (comment === "" || comment == null) {
+			console.log("votre commentaire ne peut être vide");
+		} else {
+			Axios.post(
+				`http://localhost:5000/api/comments/${id}`,
+				{
+					comment,
 				},
-			}
-		)
-			.then((response) => {
-				console.log(response);
-				HandleUpdate();
-			})
-			.catch((err) => console.log(err));
+				{
+					headers: {
+						Authorization: "Bearer " + token,
+					},
+				}
+			)
+				.then(() => {
+					console.log("Votre commentaire a été publié");
+					HandleUpdate();
+				})
+				.catch((err) => console.log(err));
+		}
 	};
 
 	return (
 		<>
+			{connected && <CreatePost HandleUpdate={HandleUpdate} />}
 			{connected && (
 				<>
 					{post.map((postContent, key) => {
@@ -154,11 +147,7 @@ export default function Post() {
 								<hr />
 								<form className="sendComment">
 									<Image
-										src={
-											postContent.User.userImg
-												? `${avatarUrl}${user.userImg}`
-												: "./assets/black_avatar.png"
-										}
+										src={userImg ? `${avatarUrl}${userImg}` : "./assets/black_avatar.png"}
 										className="comment__avatar"
 										roundedCircle
 									/>

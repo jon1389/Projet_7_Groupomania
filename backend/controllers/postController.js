@@ -69,9 +69,12 @@ exports.deletePost = (req, res, next) => {
 	const decoded = jwt.decode(token, { complete: true });
 	db.Post.findOne({ where: { id: req.params.id } }).then((post) => {
 		if (post.UserId === decoded.payload.userId) {
-			db.Post.destroy({ where: { id: req.params.id, UserId: decoded.payload.userId } })
-				.then(() => res.status(200).json({ message: "Publication supprimée !" }))
-				.catch((error) => res.status(500).json({ error }));
+			const filename = post.postImg;
+			fs.unlink(`images/${filename}`, () => {
+				db.Post.destroy({ where: { id: req.params.id, UserId: decoded.payload.userId } })
+					.then(() => res.status(200).json({ message: "Publication supprimée !" }))
+					.catch((error) => res.status(500).json({ error }));
+			});
 		} else {
 			res.status(401).json("Vous ne pouvez pas supprimer cette publication");
 		}

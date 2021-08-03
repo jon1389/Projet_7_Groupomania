@@ -92,7 +92,7 @@ function ModifyPost(postContent) {
 			.then(() => {
 				console.log("Publication supprimée");
 				handleClose();
-				window.location.href = "/home";
+				postContent.HandleUpdate();
 			})
 			.catch((error) => {
 				console.log(error, "Vous ne pouvez pas supprimer cette publication");

@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Container, Form, Image, Modal, Row } from "react-bootstrap";
 import jwt_decode from "jwt-decode";
 
-export default function CreatePost() {
+export default function CreatePost(HandleUpdate) {
 	const url = "http://localhost:5000/avatars/";
 
 	/// Récupération des données de l'utilisateur ///
@@ -82,9 +82,9 @@ export default function CreatePost() {
 				"Content-Type": "multipart/form-data",
 			},
 		})
-			.then((response) => {
-				console.log(response);
-				window.location.href = "/home";
+			.then(() => {
+				console.log("Publication créée");
+				HandleUpdate.HandleUpdate();
 				handleClose();
 			})
 			.catch((err) => console.log(err));

@@ -62,8 +62,6 @@ export default function SignupForm() {
 					"; expires=" +
 					date.toUTCString() +
 					"; path=/; SameSite=Strict";
-				console.log(userImg.current.files);
-				console.log(userImg.current.files[0]);
 				window.location.href = "/login";
 			})
 			.catch((error) => {

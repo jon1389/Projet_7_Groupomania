@@ -1,6 +1,7 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const path = require("path");
 
 exports.getAllUsers = (req, res) => {
 	db.User.findAll()
@@ -20,7 +21,18 @@ exports.getCurrentUser = (req, res, next) => {
 };
 
 exports.deleteCurrentUser = (req, res, next) => {
-	db.User.destroy({ where: { id: req.params.id } })
-		.then(() => res.status(200).json({ message: "Utilisateur supprimé !" }))
-		.catch((error) => console.log(error));
+	db.User.findOne({ where: { id: req.params.id } }).then((user) => {
+		const filename = user.userImg;
+		if (filename != "random.png") {
+			fs.unlink(`avatars/${filename}`, () => {
+				db.User.destroy({ where: { id: req.params.id } })
+					.then(() => res.status(200).json({ message: "Utilisateur supprimé !" }))
+					.catch((error) => console.log(error));
+			});
+		} else {
+			db.User.destroy({ where: { id: req.params.id } })
+				.then(() => res.status(200).json({ message: "Utilisateur supprimé !" }))
+				.catch((error) => console.log(error));
+		}
+	});
 };
