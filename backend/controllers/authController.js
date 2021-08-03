@@ -9,7 +9,7 @@ exports.signup = (req, res, next) => {
 	const firstname = req.body.firstname;
 	const lastname = req.body.lastname;
 	const email = req.body.email;
-	const userImg = req.file.filename;
+	// const userImg = req.file.filename;
 	const password = req.body.password;
 
 	const isPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -37,17 +37,13 @@ exports.signup = (req, res, next) => {
 			bcrypt
 				.hash(password, 10)
 				.then((hash) => {
-					// const userPicture = req.file
-					// 	? {
-					// 			userImg: req.file.filename,
-					// 	  }
-					// 	: {};
+					const userPicture = req.file ? req.file.filename : "random.png";
 					db.User.create({
 						firstname,
 						lastname,
 						email,
 						password: hash,
-						userImg,
+						userImg: userPicture,
 					})
 						.then((user) => {
 							res.status(201).json({

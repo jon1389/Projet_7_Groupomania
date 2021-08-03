@@ -51,16 +51,15 @@ export default function CreateComment(post) {
 			.then((response) => {
 				console.log(response);
 				setCount((c) => c + 1);
-				console.log("Le commentaire ne peut pas être vide");
 			})
 			.catch((err) => console.log(err));
 	};
 
-	const handleKeyDown = (event) => {
-		if (event.key === "Enter") {
-			handleComment(post.id);
-		}
-	};
+	// const handleKeyDown = (event) => {
+	// 	if (event.key === "Enter") {
+	// 		handleComment(post.id);
+	// 	}
+	// };
 
 	return (
 		<form className="sendComment">

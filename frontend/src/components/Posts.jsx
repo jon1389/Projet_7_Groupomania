@@ -62,8 +62,8 @@ export default function Post() {
 									</span>
 								</div>
 								<div className="post__topRight">
-									{/* {post.UserId === userId ? <ModifyPost post={post} /> : null} */}
-									<ModifyPost post={post} />
+									{post.UserId === userId ? <ModifyPost post={post} /> : null}
+									{/* <ModifyPost post={post} /> */}
 								</div>
 							</div>
 							<hr />

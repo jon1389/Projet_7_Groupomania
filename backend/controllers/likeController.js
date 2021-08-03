@@ -1,5 +1,6 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
+const Sequelize = require("sequelize");
 
 exports.findAllLikes = (req, res, next) => {
 	console.log(req.params);
@@ -54,18 +55,19 @@ exports.createLike = (req, res, next) => {
 						UserId: decoded.payload.userId,
 					},
 					{ where: { PostId: req.params.id } }
-				).then(() => {
-					db.Dislike.findOne({
-						where: {
-							PostId: req.params.id,
-							UserId: decoded.payload.userId,
-						},
-					}).then((dislikes) => {
-						if (dislikes) {
-							db.Dislike.destroy({ where: { PostId: req.params.id } });
-						}
-					});
-				});
+				);
+				// .then(() => {
+				// 	db.Dislike.findOne({
+				// 		where: {
+				// 			PostId: req.params.id,
+				// 			UserId: decoded.payload.userId,
+				// 		},
+				// 	}).then((dislikes) => {
+				// 		if (dislikes) {
+				// 			db.Dislike.destroy({ where: { PostId: req.params.id } });
+				// 		}
+				// 	});
+				// });
 			} else {
 				db.Like.destroy({ where: { PostId: req.params.id } });
 				console.log("error");
