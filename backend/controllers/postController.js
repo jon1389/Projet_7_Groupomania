@@ -68,10 +68,10 @@ exports.deletePost = (req, res, next) => {
 	const token = req.headers.authorization.split(" ")[1];
 	const decoded = jwt.decode(token, { complete: true });
 	db.Post.findOne({ where: { id: req.params.id } }).then((post) => {
-		if (post.UserId === decoded.payload.userId) {
+		if (post.UserId === decoded.payload.userId || decoded.payload.isAdmin == 1) {
 			const filename = post.postImg;
 			fs.unlink(`images/${filename}`, () => {
-				db.Post.destroy({ where: { id: req.params.id, UserId: decoded.payload.userId } })
+				db.Post.destroy({ where: { id: req.params.id } })
 					.then(() => res.status(200).json({ message: "Publication supprimée !" }))
 					.catch((error) => res.status(500).json({ error }));
 			});

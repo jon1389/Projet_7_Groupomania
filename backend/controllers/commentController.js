@@ -41,9 +41,8 @@ exports.getCommentById = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
 	const token = req.headers.authorization.split(" ")[1];
 	const decoded = jwt.decode(token, { complete: true });
-	console.log(req.params.id);
 	db.Comment.findOne({ where: { id: req.params.id } }).then((comment) => {
-		if (comment.UserId === decoded.payload.userId) {
+		if (comment.UserId === decoded.payload.userId || decoded.payload.isAdmin == 1) {
 			db.Comment.destroy({ where: { id: req.params.id } })
 				.then(() => res.status(200).json({ message: "Commentaire supprimé !" }))
 				.catch((error) => res.status(400).json({ error }));

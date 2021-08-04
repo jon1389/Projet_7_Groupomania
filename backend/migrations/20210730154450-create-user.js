@@ -28,6 +28,11 @@ module.exports = {
 			userImg: {
 				type: Sequelize.STRING,
 			},
+			isAdmin: {
+				type: Sequelize.BOOLEAN,
+				allowNull: false,
+				defaultValue: 0,
+			},
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,

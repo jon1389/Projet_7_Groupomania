@@ -16,6 +16,8 @@ export default function Post() {
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
 	const userImg = decoded.userImg;
+	const userAdmin = decoded.isAdmin;
+	console.log(userAdmin);
 
 	/// Vérifier si l'utilisateur est bien connecté/autorisé ///
 	const [connected, setConnected] = useState();
@@ -111,7 +113,7 @@ export default function Post() {
 											</span>
 										</div>
 										<div className="post__topRight">
-											{postContent.UserId === userId ? (
+											{postContent.UserId === userId || userAdmin === 1 ? (
 												<ModifyPost postContent={postContent} HandleUpdate={HandleUpdate} />
 											) : null}
 										</div>

@@ -12,6 +12,7 @@ export default function Comment(postContent) {
 	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
+	const userAdmin = decoded.isAdmin;
 
 	/// Import des données des commentaires ////
 	const [comments, setComments] = useState([]);
@@ -57,7 +58,7 @@ export default function Comment(postContent) {
 										</div>
 										<div className="comment__text">{comment.commentText}</div>
 									</div>
-									{comment.UserId === userId ? (
+									{comment.UserId === userId || userAdmin === 1 ? (
 										<DeleteComment comment={comment} postContent={postContent} />
 									) : null}
 								</div>

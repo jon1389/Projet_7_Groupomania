@@ -51,6 +51,7 @@ exports.signup = (req, res, next) => {
 									{
 										userId: user.id,
 										userImg: user.userImg,
+										isAdmin: user.isAdmin,
 									},
 									process.env.TOKEN_ENCODED,
 									{ expiresIn: "24h" }
@@ -90,9 +91,14 @@ exports.login = (req, res, next) => {
 					res.status(200).json({
 						userId: user.id,
 						userImg: user.userImg,
-						token: jwt.sign({ userId: user.id, userImg: user.userImg }, process.env.TOKEN_ENCODED, {
-							expiresIn: "24h",
-						}),
+						isAdmin: user.isAdmin,
+						token: jwt.sign(
+							{ userId: user.id, userImg: user.userImg, isAdmin: user.isAdmin },
+							process.env.TOKEN_ENCODED,
+							{
+								expiresIn: "24h",
+							}
+						),
 					});
 				})
 				.catch((error) => res.status(500).json({ error }));
