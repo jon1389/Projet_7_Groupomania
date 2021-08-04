@@ -6,22 +6,12 @@ import jwt_decode from "jwt-decode";
 import { format, register } from "timeago.js";
 import { Timeago } from "../functions/Timeago";
 
-export default function Comment(postContent, isUpdate) {
+export default function Comment(postContent) {
 	const avatarUrl = "http://localhost:5000/avatars/";
 	register("FR", Timeago);
 	const token = sessionStorage.getItem("token");
 	const decoded = jwt_decode(token);
 	const userId = decoded.userId;
-
-	/// fonction pour le re-render de DeleteComment ///
-	const [deleteComment, setDeleteComment] = useState(false);
-	function HandleDeleteComment() {
-		if (deleteComment === true) {
-			setDeleteComment(false);
-		} else {
-			setDeleteComment(true);
-		}
-	}
 
 	/// Import des données des commentaires ////
 	const [comments, setComments] = useState([]);
@@ -38,7 +28,7 @@ export default function Comment(postContent, isUpdate) {
 			.catch((err) => {
 				console.log(err);
 			});
-	}, [token, isUpdated, deleteComment]);
+	}, [token, isUpdated]);
 
 	return (
 		<>
@@ -68,7 +58,7 @@ export default function Comment(postContent, isUpdate) {
 										<div className="comment__text">{comment.commentText}</div>
 									</div>
 									{comment.UserId === userId ? (
-										<DeleteComment comment={comment} HandleDeleteComment={HandleDeleteComment} />
+										<DeleteComment comment={comment} postContent={postContent} />
 									) : null}
 								</div>
 							</div>

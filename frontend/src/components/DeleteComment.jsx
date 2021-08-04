@@ -5,6 +5,7 @@ import Axios from "axios";
 export default function DeleteComment(comments) {
 	const token = sessionStorage.getItem("token");
 	const id = comments.comment.id;
+	const HandleUpdate = comments.postContent.HandleUpdate;
 
 	/// Supprimer un commentaire ///
 	const deleteComment = () => {
@@ -17,7 +18,7 @@ export default function DeleteComment(comments) {
 		})
 			.then(() => {
 				console.log("Publication supprimée");
-				comments.HandleDeleteComment();
+				HandleUpdate();
 			})
 			.catch((err) => {
 				console.log(err, "Vous ne pouvez pas supprimer ce commentaire");
