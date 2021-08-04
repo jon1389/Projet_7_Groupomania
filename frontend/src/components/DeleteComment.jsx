@@ -10,14 +10,14 @@ export default function DeleteComment(comments) {
 	/// Supprimer un commentaire ///
 	const deleteComment = () => {
 		const confirmation = window.confirm("Êtes-vous sûr de vouloir supprimer ce commentaire?");
-		if (!confirmation) return;
+		if (!confirmation) return console.log("Votre commentaire n'a pas été supprimé");
 		Axios.delete(`http://localhost:5000/api/comments/` + id, {
 			headers: {
 				Authorization: "Bearer " + token,
 			},
 		})
 			.then(() => {
-				console.log("Publication supprimée");
+				console.log("Commentaire supprimé");
 				HandleUpdate();
 			})
 			.catch((err) => {

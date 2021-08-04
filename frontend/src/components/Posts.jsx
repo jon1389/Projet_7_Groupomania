@@ -145,7 +145,12 @@ export default function Post() {
 									/>
 								)}
 								<hr />
-								<form className="sendComment">
+								<form
+									className="sendComment"
+									onSubmit={(e) => {
+										e.preventDefault();
+									}}
+								>
 									<Image
 										src={userImg ? `${avatarUrl}${userImg}` : "./assets/black_avatar.png"}
 										className="comment__avatar"
@@ -157,9 +162,7 @@ export default function Post() {
 										placeholder="Écrivez un commentaire..."
 										onChange={selectTextComment}
 										onKeyPress={(event) =>
-											event.preventDefault &&
-											event.key === "Enter" &&
-											handleComment(postContent.id, postContent)
+											event.key === "Enter" && handleComment(postContent.id, postContent)
 										}
 									/>
 									<Image
