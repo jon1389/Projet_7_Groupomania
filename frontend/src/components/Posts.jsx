@@ -156,6 +156,11 @@ export default function Post() {
 										className="sendComment__input"
 										placeholder="Écrivez un commentaire..."
 										onChange={selectTextComment}
+										onKeyPress={(event) =>
+											event.preventDefault &&
+											event.key === "Enter" &&
+											handleComment(postContent.id, postContent)
+										}
 									/>
 									<Image
 										type="submit"
