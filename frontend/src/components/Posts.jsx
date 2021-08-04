@@ -17,7 +17,6 @@ export default function Post() {
 	const userId = decoded.userId;
 	const userImg = decoded.userImg;
 	const userAdmin = decoded.isAdmin;
-	console.log(userAdmin);
 
 	/// Vérifier si l'utilisateur est bien connecté/autorisé ///
 	const [connected, setConnected] = useState();
