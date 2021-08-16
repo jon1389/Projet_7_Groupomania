@@ -40,7 +40,7 @@ const server = http.createServer(app);
 
 server.on("error", errorHandler);
 server.on("listening", async () => {
-	db.sequelize.sync({ alter: true });
+	// db.sequelize.sync({ alter: true });
 	db.sequelize.authenticate();
 	const address = server.address();
 	const bind = typeof address === "string" ? "pipe " + address : "port " + port;

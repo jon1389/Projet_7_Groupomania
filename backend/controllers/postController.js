@@ -12,7 +12,7 @@ exports.createPost = (req, res, next) => {
 		postImg: req.file.filename,
 		UserId: decoded.payload.userId,
 	})
-		.then((post) => res.status(201).json({ post }))
+		.then(() => res.status(201).json({ message: "Publication créée" }))
 		.catch((error) => res.status(500).json({ error }));
 };
 

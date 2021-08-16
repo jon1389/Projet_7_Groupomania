@@ -1,5 +1,35 @@
 # P7 Groupomania - Créez un réseau social d’entreprise
 
+## Contexte
+
+Vous êtes développeur depuis plus d'un an chez CONNECT-E, une petite agence web regroupant une douzaine d'employés.
+Votre directrice, Stéphanie, invite toute l'agence à prendre un verre pour célébrer une bonne nouvelle ! Elle vient de signer un contrat pour un nouveau projet ambitieux ! 🥂
+Le client en question est Groupomania, un groupe spécialisé dans la grande distribution et l'un des plus fidèles clients de l'agence.
+
+## Mission
+
+Le projet consiste à construire un réseau social interne pour les employés de Groupomania. Le but de cet outil est de faciliter les interactions entre collègues. Le département RH de Groupomania a laissé libre cours à son imagination pour les fonctionnalités du réseau et a imaginé plusieurs briques pour favoriser les échanges entre collègues.
+Dans cette mission, nous allons développer un réseau social où les employés pourront partager et commenter des images/gifs.
+
+### Exigences émises par le comité de pilotage
+
+- La présentation des fonctionnalités doit être simple ;
+- La création d’un compte doit être simple et possible depuis un téléphone mobile ;
+- Le profil doit contenir très peu d’informations pour que sa complétion soit rapide ;
+- La suppression du compte doit être possible ;
+- L’accès à un forum où les salariés publient des contenus multimédias doit être présent ;
+- Les utilisateurs doivent pouvoir facilement repérer les dernières participations des employés ;
+- Le ou la chargé-e de communication Groupomania doit pouvoir modérer les interactions entre salariés ;
+
+## Technologies utilisées
+
+- Framework backend : Express
+- Serveur : NodeJS
+- Base de données : MySQL
+- ORM : Sequelize
+- Framework frontend : ReactJS
+- Sass
+
 ## Installation
 
 ### Front-End
